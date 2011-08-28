@@ -10,7 +10,7 @@ import org.nlogo.nvm.EngineException;
 import org.nlogo.nvm.Reporter;
 import org.nlogo.nvm.Syntax;
 
-public final strictfp class _networkshortestpathnodes extends Reporter {
+public final strictfp class PathTurtles extends Reporter {
   @Override
   public Syntax syntax() {
     int[] right = {Syntax.TYPE_TURTLE, Syntax.TYPE_LINKSET};

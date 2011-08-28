@@ -13,7 +13,7 @@ import org.nlogo.nvm.EngineException;
 import org.nlogo.nvm.Reporter;
 import org.nlogo.nvm.Syntax;
 
-public final strictfp class _innetworkradius
+public final strictfp class InLinkRadius
     extends Reporter {
   @Override
   public Syntax syntax() {

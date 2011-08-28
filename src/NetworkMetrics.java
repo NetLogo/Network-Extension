@@ -205,7 +205,7 @@ public strictfp class NetworkMetrics {
 
 
   /**
-   * Calculates the average shortest-path length between all (distinct) pairs
+   * Calculates the mean shortest-path length between all (distinct) pairs
    * of nodes in the given nodeSet, by traveling along links of the given linkBreed.
    * <p/>
    * It returns -1 if any two nodes in nodeSet are not connected by a path.
@@ -213,12 +213,12 @@ public strictfp class NetworkMetrics {
    * Note: this method follows directed links both directions.
    * But we could change its functionality when dealing with
    * directed links -- I'm not sure what the right thing is.
-   * Seems like often the average path length (when only following
+   * Seems like often the mean path length (when only following
    * links "forward)in a directed-graph would be undefined.
    * <p/>
    * ~Forrest (5/11/2007)
    */
-  public double averagePathLength(AgentSet nodeSet, AgentSet linkBreed) {
+  public double meanPathLength(AgentSet nodeSet, AgentSet linkBreed) {
     HashSet<Turtle> seen = new HashSet<Turtle>();
     LinkedList<Turtle> queue = new LinkedList<Turtle>();
     long totalSum = 0;
