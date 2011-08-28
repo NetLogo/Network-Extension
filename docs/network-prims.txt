@@ -1,9 +1,14 @@
+src:
+
 R __average-path-length etc._averagepathlength
-C __create-network-preferential etc._createnetworkpreferential
 R __in-network-radius etc._innetworkradius
 R __network-distance etc._networkdistance
 R __network-shortest-path-links etc._networkshortestpathlinks
 R __network-shortest-path-nodes etc._networkshortestpathnodes
+
+src-more:
+
+C __create-network-preferential etc._createnetworkpreferential
 C __layout-magspring etc._layoutmagspring
 C __layout-quick etc._layoutquick
 C __layout-sphere threed._layoutsphere
