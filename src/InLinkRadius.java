@@ -24,16 +24,11 @@ public final strictfp class InLinkRadius
         (left, right, ret, Syntax.NORMAL_PRECEDENCE + 2, false,
             "-T--", null);
   }
-
   @Override
   public Object report(final Context context) throws LogoException {
-    return report_1(context, argEvalAgentSet(context, 0),
-        argEvalDoubleValue(context, 1),
-        argEvalAgentSet(context, 2));
-  }
-
-  public AgentSet report_1(final Context context, AgentSet sourceSet, double radius, AgentSet linkBreed)
-      throws LogoException {
+    AgentSet sourceSet = argEvalAgentSet(context, 0);
+    double radius = argEvalDoubleValue(context, 1);
+    AgentSet linkBreed = argEvalAgentSet(context, 2);
     if (sourceSet.type() != org.nlogo.agent.Turtle.class) {
       throw new ArgumentTypeException(context, this, 0, Syntax.TYPE_TURTLESET, sourceSet);
     }
@@ -45,10 +40,8 @@ public final strictfp class InLinkRadius
       throw new EngineException
           (context, this, displayName() + " should not be given a negative radius");
     }
-
     Set<Turtle> result =
         world.linkManager.networkMetrics.inNetworkRadius((Turtle) context.agent, sourceSet, radius, linkBreed);
-
     return new ArrayAgentSet
         (sourceSet.type(),
             result.toArray(new Agent[result.size()]),

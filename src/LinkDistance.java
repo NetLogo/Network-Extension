@@ -10,6 +10,7 @@ import org.nlogo.nvm.EngineException;
 import org.nlogo.nvm.Syntax;
 
 public final strictfp class LinkDistance extends Reporter {
+
   @Override
   public Syntax syntax() {
     int[] right = {Syntax.TYPE_TURTLE, Syntax.TYPE_LINKSET};
@@ -19,13 +20,8 @@ public final strictfp class LinkDistance extends Reporter {
 
   @Override
   public Object report(Context context) throws LogoException {
-    return report_1(context,
-        argEvalTurtle(context, 0),
-        argEvalAgentSet(context, 1));
-  }
-
-  public double report_1(Context context, Turtle destNode, AgentSet linkBreed)
-      throws LogoException {
+    Turtle destNode = argEvalTurtle(context, 0);
+    AgentSet linkBreed = argEvalAgentSet(context, 1);
     if (linkBreed != world.links() && !world.isLinkBreed(linkBreed)) {
       throw new EngineException (context, this,
               I18N.errorsJ().get("org.nlogo.prim.etc.$common.expectedLastInputToBeLinkBreed"));
@@ -34,7 +30,9 @@ public final strictfp class LinkDistance extends Reporter {
       throw new EngineException(context, this,
         I18N.errorsJ().getN("org.nlogo.$common.thatAgentIsDead", destNode.classDisplayName()));
     }
-    return world.linkManager.networkMetrics.networkDistance
-        ((Turtle) context.agent, destNode, linkBreed);
+    return Double.valueOf(
+      world.linkManager.networkMetrics.networkDistance
+      ((Turtle) context.agent, destNode, linkBreed));
   }
+
 }

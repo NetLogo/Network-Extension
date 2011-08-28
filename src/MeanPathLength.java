@@ -16,15 +16,10 @@ public final strictfp class MeanPathLength extends Reporter {
     int ret = Syntax.TYPE_NUMBER;
     return Syntax.reporterSyntax(right, ret);
   }
-
   @Override
   public Object report(Context context) throws LogoException {
-    return report_1(context, argEvalAgentSet(context, 0),
-        argEvalAgentSet(context, 1));
-  }
-
-  public double report_1(Context context, AgentSet nodeSet, AgentSet linkBreed)
-      throws LogoException {
+    AgentSet nodeSet = argEvalAgentSet(context, 0);
+    AgentSet linkBreed = argEvalAgentSet(context, 1);
     if (nodeSet.type() != org.nlogo.agent.Turtle.class) {
       throw new ArgumentTypeException
           (context, this, 0, Syntax.TYPE_TURTLESET, nodeSet);
@@ -33,7 +28,7 @@ public final strictfp class MeanPathLength extends Reporter {
       throw new EngineException (context, this,
               I18N.errorsJ().get("org.nlogo.prim.etc.$common.expectedLastInputToBeLinkBreed"));
     }
-    return world.linkManager.networkMetrics
-        .meanPathLength(nodeSet, linkBreed);
+    return Double.valueOf(
+      world.linkManager.networkMetrics.meanPathLength(nodeSet, linkBreed));
   }
 }
