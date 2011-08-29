@@ -1,4 +1,4 @@
-package org.nlogo.agent;
+package org.nlogo.extensions.network;
 
 import java.util.HashMap;
 import java.util.HashSet;

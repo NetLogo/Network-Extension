@@ -1,4 +1,4 @@
-package org.nlogo.prim.etc;
+package org.nlogo.extensions.network;
 
 import java.util.Set;
 
