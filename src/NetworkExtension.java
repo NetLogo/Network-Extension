@@ -5,7 +5,7 @@ import org.nlogo.api.PrimitiveManager;
 
 import java.util.Iterator;
 
-public class TableExtension
+public class NetworkExtension
 extends DefaultClassManager {
 
   public void load(PrimitiveManager primManager) {

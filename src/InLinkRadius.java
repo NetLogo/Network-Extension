@@ -3,34 +3,35 @@ package org.nlogo.extensions.network;
 import java.util.Set;
 
 import org.nlogo.agent.Agent;
-import org.nlogo.agent.AgentSet;
 import org.nlogo.agent.ArrayAgentSet;
 import org.nlogo.agent.Turtle;
+import org.nlogo.api.AgentSet;
+import org.nlogo.api.Argument;
+import org.nlogo.api.Context;
+import org.nlogo.api.DefaultReporter;
 import org.nlogo.api.LogoException;
+import org.nlogo.api.Syntax;
 import org.nlogo.nvm.ArgumentTypeException;
-import org.nlogo.nvm.Context;
 import org.nlogo.nvm.EngineException;
-import org.nlogo.nvm.Reporter;
-import org.nlogo.nvm.Syntax;
 
 public final strictfp class InLinkRadius
-    extends Reporter {
+    extends DefaultReporter {
   @Override
-  public Syntax syntax() {
-    int left = Syntax.TYPE_TURTLESET;
-    int[] right = {Syntax.TYPE_NUMBER, Syntax.TYPE_LINKSET};
-    int ret = Syntax.TYPE_TURTLESET;
-    return Syntax.reporterSyntax
-        (left, right, ret, Syntax.NORMAL_PRECEDENCE + 2, false,
-            "-T--", null);
+  public Syntax getSyntax() {
+    int left = Syntax.TurtlesetType();
+    int[] right = {Syntax.NumberType(), Syntax.LinksetType()};
+    int ret = Syntax.TurtlesetType();
+    return Syntax.reporterSyntax(
+      left, right, ret, Syntax.NormalPrecedence() + 2, false,
+      "-T--", null);
   }
   @Override
-  public Object report(final Context context) throws LogoException {
-    AgentSet sourceSet = argEvalAgentSet(context, 0);
-    double radius = argEvalDoubleValue(context, 1);
-    AgentSet linkBreed = argEvalAgentSet(context, 2);
+  public Object report(Argument[] args, Context context) throws LogoException {
+    AgentSet sourceSet = args[0].getAgentSet();
+    double radius = args[1].getDoubleValue();
+    AgentSet linkBreed = args[2].getAgentSet();
     if (sourceSet.type() != org.nlogo.agent.Turtle.class) {
-      throw new ArgumentTypeException(context, this, 0, Syntax.TYPE_TURTLESET, sourceSet);
+      throw new ArgumentTypeException(context, this, 0, Syntax.TurtlesetType(), sourceSet);
     }
     if (linkBreed != world.links() && !world.isLinkBreed(linkBreed)) {
       throw new EngineException

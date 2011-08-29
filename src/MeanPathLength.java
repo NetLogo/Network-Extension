@@ -1,28 +1,29 @@
 package org.nlogo.extensions.network;
 
-import org.nlogo.agent.AgentSet;
+import org.nlogo.api.AgentSet;
+import org.nlogo.api.Argument;
+import org.nlogo.api.Context;
+import org.nlogo.api.DefaultReporter;
 import org.nlogo.api.I18N;
 import org.nlogo.api.LogoException;
+import org.nlogo.api.Syntax;
 import org.nlogo.nvm.ArgumentTypeException;
-import org.nlogo.nvm.Context;
-import org.nlogo.nvm.Reporter;
 import org.nlogo.nvm.EngineException;
-import org.nlogo.nvm.Syntax;
 
-public final strictfp class MeanPathLength extends Reporter {
+public final strictfp class MeanPathLength extends DefaultReporter {
   @Override
-  public Syntax syntax() {
-    int[] right = {Syntax.TYPE_TURTLESET, Syntax.TYPE_LINKSET};
-    int ret = Syntax.TYPE_NUMBER;
+  public Syntax getSyntax() {
+    int[] right = {Syntax.TurtlesetType(), Syntax.LinksetType()};
+    int ret = Syntax.NumberType();
     return Syntax.reporterSyntax(right, ret);
   }
   @Override
-  public Object report(Context context) throws LogoException {
-    AgentSet nodeSet = argEvalAgentSet(context, 0);
-    AgentSet linkBreed = argEvalAgentSet(context, 1);
+  public Object report(Argument[] args, Context context) throws LogoException {
+    AgentSet nodeSet = args[0].getAgentSet();
+    AgentSet linkBreed = args[1].getAgentSet();
     if (nodeSet.type() != org.nlogo.agent.Turtle.class) {
-      throw new ArgumentTypeException
-          (context, this, 0, Syntax.TYPE_TURTLESET, nodeSet);
+      throw new ArgumentTypeException(
+        context, this, 0, Syntax.TurtlesetType(), nodeSet);
     }
     if (linkBreed != world.links() && !world.isLinkBreed(linkBreed)) {
       throw new EngineException (context, this,

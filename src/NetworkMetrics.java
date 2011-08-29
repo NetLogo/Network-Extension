@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.nlogo.api.LogoList;
 import org.nlogo.api.LogoListBuilder;
+import org.nlogo.agent.*;
 
 public strictfp class NetworkMetrics {
 
