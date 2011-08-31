@@ -1,17 +1,16 @@
-ifeq ($(origin JAVA_HOME), undefined)
-  JAVA_HOME=/usr
-endif
-
 ifeq ($(origin NETLOGO), undefined)
   NETLOGO=../..
 endif
 
-JAVAC=$(JAVA_HOME)/bin/javac
-SRCS=$(wildcard src/*.java)
+ifeq ($(origin SCALA_HOME), undefined)
+  SCALA_HOME=../..
+endif
+
+SRCS=$(wildcard src/*.scala)
 
 network.jar: $(SRCS) manifest.txt Makefile
 	mkdir -p classes
-	$(JAVAC) -g -deprecation -Xlint:all -Xlint:-serial -Xlint:-path -encoding us-ascii -source 1.5 -target 1.5 -classpath $(NETLOGO)/NetLogoLite.jar -d classes $(SRCS)
+	$(SCALA_HOME)/bin/scalac -deprecation -unchecked -encoding us-ascii -classpath $(NETLOGO)/NetLogo.jar -d classes $(SRCS)
 	jar cmf manifest.txt network.jar -C classes .
 
 network.zip: network.jar

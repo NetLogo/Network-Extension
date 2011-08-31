@@ -1,22 +1,8 @@
-package org.nlogo.extensions.network;
+package org.nlogo.extensions.network
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
+import org.nlogo.api.{ LogoList, LogoListBuilder }
 
-import org.nlogo.api.LogoList;
-import org.nlogo.api.LogoListBuilder;
-import org.nlogo.agent.*;
-
-public strictfp class NetworkMetrics {
-
-  private final LinkManager linkManager;
-
-  NetworkMetrics(LinkManager linkManager) {
-    this.linkManager = linkManager;
-  }
+class Metrics(linkManager: LinkManager) {
 
   /**
    * This method performs a BFS from the sourceNode,
