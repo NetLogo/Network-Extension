@@ -3,7 +3,7 @@ package org.nlogo.extensions.network
 import org.nlogo.api.{ LogoList, LogoListBuilder }
 import org.nlogo.agent.{ LinkManager, Turtle, AgentSet }
 
-class Metrics(linkManager: LinkManager) {
+object Metrics {
 
   /**
    * This method performs a BFS from the sourceNode, following the network imposed by the given
@@ -14,7 +14,8 @@ class Metrics(linkManager: LinkManager) {
    * functionality when dealing with directed links -- I'm not sure what the right thing is.
    * ~Forrest (5/11/2007)
    */
-  def inNetworkRadius(sourceNode: Turtle, sourceSet: AgentSet, radius: Double, linkBreed: AgentSet): collection.Set[Turtle] = {
+  def inLinkRadius(sourceNode: Turtle, sourceSet: AgentSet, radius: Double, linkBreed: AgentSet): collection.Set[Turtle] = {
+    val linkManager = sourceNode.world.linkManager
     val seen = collection.mutable.Set[Turtle]()
     val visited = collection.mutable.Set[Turtle]()
     val queue = collection.mutable.Queue[Option[Turtle]]()
@@ -61,6 +62,7 @@ class Metrics(linkManager: LinkManager) {
    * direction.  It returns -1 if there is no path between the two nodes.  ~Forrest (5/11/2007)
    */
   def networkDistance(sourceNode: Turtle, destNode: Turtle, linkBreed: AgentSet): Int = {
+    val linkManager = sourceNode.world.linkManager
     val isDirectedBreed = linkBreed.isDirected
     val seen = collection.mutable.HashSet[Turtle]()
     val queue = collection.mutable.Queue[Option[Turtle]]()
@@ -110,9 +112,9 @@ class Metrics(linkManager: LinkManager) {
    * had enumerated *all* shortest paths, and chose one of them uniformly at random.  I don't think
    * there is an efficient way to implement it that other way.  ~Forrest (5/11/2007)
    */
-  def networkShortestPathNodes(random: org.nlogo.util.MersenneTwisterFast,
-                               sourceNode: Turtle, destNode: Turtle,
-                               linkBreed: AgentSet): LogoList = {
+  def pathNodes(random: org.nlogo.util.MersenneTwisterFast, sourceNode: Turtle,
+                destNode: Turtle, linkBreed: AgentSet): LogoList = {
+    val linkManager = sourceNode.world.linkManager
     val path = new LogoListBuilder
     if (sourceNode eq destNode) {
       path.add(sourceNode)
@@ -140,7 +142,7 @@ class Metrics(linkManager: LinkManager) {
           var agt = curNode
           while (agt != null) {
             path.add(agt)
-            agt = seenParents.get(agt).orNull
+            agt = seenParents.get(agt).get.orNull
           }
           return path.toLogoList
         }
@@ -153,21 +155,22 @@ class Metrics(linkManager: LinkManager) {
     LogoList.Empty
   }
 
-  def networkShortestPathLinks(random: org.nlogo.util.MersenneTwisterFast,
-                               sourceNode: Turtle, destNode: Turtle, linkBreed: AgentSet): LogoList = {
-    val pathNodes = networkShortestPathNodes(random, sourceNode, destNode, linkBreed)
-    val pathLinks = new LogoListBuilder
-    if (pathNodes.size <= 1)
+  def pathLinks(random: org.nlogo.util.MersenneTwisterFast,
+                sourceNode: Turtle, destNode: Turtle, linkBreed: AgentSet): LogoList = {
+    val linkManager = sourceNode.world.linkManager
+    val nodes = pathNodes(random, sourceNode, destNode, linkBreed)
+    val links = new LogoListBuilder
+    if (nodes.size <= 1)
       LogoList.Empty
     else {
-      val it = pathNodes.iterator
+      val it = nodes.iterator
       var t1 = it.next().asInstanceOf[Turtle]
       while (it.hasNext) {
         val t2 = it.next().asInstanceOf[Turtle]
-        pathLinks.add(linkManager.findLink(t1, t2, linkBreed, true))
+        links.add(linkManager.findLink(t1, t2, linkBreed, true))
         t1 = t2
       }
-      pathLinks.toLogoList
+      links.toLogoList
     }
   }
 
@@ -185,6 +188,7 @@ class Metrics(linkManager: LinkManager) {
    * ~Forrest (5/11/2007)
    */
   def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Double = {
+    var linkManager: LinkManager = null
     val seen = collection.mutable.HashSet[Turtle]()
     val queue = collection.mutable.Queue[Option[Turtle]]()
     var totalSum = 0L
@@ -212,6 +216,8 @@ class Metrics(linkManager: LinkManager) {
             totalSum += layer
             nodeSetVisitedCount += 1
           }
+          if(linkManager == null)
+            linkManager = curNode.get.world.linkManager
           val neighborSet = linkManager.findLinkedWith(curNode.get, linkBreed)
           val it = neighborSet.iterator
           while(it.hasNext) {

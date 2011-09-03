@@ -1,9 +1,8 @@
 package org.nlogo.extensions.network
 
 import org.nlogo.api.{
-  DefaultClassManager, PrimitiveManager, AgentSet, Argument, Context, DefaultReporter,
+  DefaultClassManager, PrimitiveManager, Agent, AgentSet, Argument, Context, DefaultReporter,
   ExtensionException, I18N, Primitive, Syntax, Turtle }
-import org.nlogo.nvm.ArgumentTypeException
 
 class NetworkExtension extends DefaultClassManager {
 
@@ -17,31 +16,31 @@ class NetworkExtension extends DefaultClassManager {
 
   /// shared error messages
 
-  private def requireTurtleset(context: Context, agents: AgentSet) {
+  private def requireTurtleset(agents: AgentSet) {
     if(!classOf[Turtle].isAssignableFrom(agents.`type`))
-      throw new ArgumentTypeException(
-        context.nvmContext, this, 0, Syntax.TurtlesetType, agents)
+      throw new ExtensionException(
+        "Expected input to be a turtleset")
   }
 
   private def requireLinkBreed(context: Context, agents: AgentSet) {
     val world = context.getAgent.world
-    if (linkBreed ne world.links && !world.isLinkBreed(linkBreed))
+    if ((agents ne world.links) &&
+        !world.asInstanceOf[org.nlogo.agent.World].isLinkBreed(agents.asInstanceOf[org.nlogo.agent.AgentSet]))
       throw new ExtensionException(
         I18N.errors.get("org.nlogo.prim.etc.$common.expectedLastInputToBeLinkBreed"))
   }
 
-  private def requireAlive(context: Context, agent: Agent) {
+  private def requireAlive(agent: Agent) {
     if (agent.id == -1)
       throw new ExtensionException(
-        context, I18N.errors.get("org.nlogo.$common.thatAgentIsDead",
-                                 agent.classDisplayName))
+        I18N.errors.get("org.nlogo.$common.thatAgentIsDead"))
   }
 
   /// primitives
 
   class InLinkRadius extends DefaultReporter {
     override def getSyntax =
-      Syntax.reporterSyntax(
+      Syntax(
         left = Syntax.TurtlesetType,
         right = Array(Syntax.NumberType, Syntax.LinksetType),
         ret = Syntax.TurtlesetType,
@@ -53,11 +52,12 @@ class NetworkExtension extends DefaultClassManager {
       val linkBreed = args(2).getAgentSet
       requireTurtleset(sourceSet)
       if (radius < 0)
-        throw new ExtensionException(
-          context, displayName + " cannot be given a negative radius")
+        throw new ExtensionException("radius cannot be negative")
       requireLinkBreed(context, linkBreed)
       Metrics.inLinkRadius(
-        context.agent.asInstanceOf[Turtle], sourceSet, radius, linkBreed)
+        context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
+        sourceSet.asInstanceOf[org.nlogo.agent.AgentSet],
+        radius, linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
     }
   }
 
@@ -72,8 +72,9 @@ class NetworkExtension extends DefaultClassManager {
       requireLinkBreed(context, linkBreed)
       requireAlive(destNode)
       java.lang.Double.valueOf(
-        Metrics.networkDistance(context.agent.asInstanceOf[Turtle],
-                                destNode, linkBreed))
+        Metrics.networkDistance(context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
+                                destNode.asInstanceOf[org.nlogo.agent.Turtle],
+                                linkBreed.asInstanceOf[org.nlogo.agent.AgentSet]))
     }
   }
 
@@ -81,14 +82,15 @@ class NetworkExtension extends DefaultClassManager {
     override def getSyntax =
       Syntax.reporterSyntax(
         Array(Syntax.TurtlesetType, Syntax.LinksetType),
-        ret)
+        Syntax.NumberType)
     override def report(args: Array[Argument], context: Context) = {
       val nodeSet = args(0).getAgentSet
       val linkBreed = args(1).getAgentSet
-      requireTurtleset(context, nodeSet)
+      requireTurtleset(nodeSet)
       requireLinkBreed(context, linkBreed)
       java.lang.Double.valueOf(
-        Metrics.meanPathLength(nodeSet, linkBreed))
+        Metrics.meanPathLength(nodeSet.asInstanceOf[org.nlogo.agent.AgentSet],
+                               linkBreed.asInstanceOf[org.nlogo.agent.AgentSet]))
     }
   }
 
@@ -102,8 +104,10 @@ class NetworkExtension extends DefaultClassManager {
       val linkBreed = args(1).getAgentSet
       requireLinkBreed(context, linkBreed)
       requireAlive(destNode)
-      Metrics.shortestPathLinks(
-        context.job.random, context.agent.asInstanceOf[Turtle], destNode, linkBreed)
+      Metrics.pathLinks(
+        context.getRNG, context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
+        destNode.asInstanceOf[org.nlogo.agent.Turtle],
+        linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
     }
   }
   
@@ -116,9 +120,11 @@ class NetworkExtension extends DefaultClassManager {
       val destNode = args(0).getTurtle
       val linkBreed = args(1).getAgentSet
       requireLinkBreed(context, linkBreed)
-      requireAlive(context, destNode)
-      Metrics.networkShortestPathNodes(
-        context.job.random, context.agent.asInstanceOf[Turtle], destNode, linkBreed)
+      requireAlive(destNode)
+      Metrics.pathNodes(
+        context.getRNG, context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
+        destNode.asInstanceOf[org.nlogo.agent.Turtle],
+        linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
     }
   }
 
