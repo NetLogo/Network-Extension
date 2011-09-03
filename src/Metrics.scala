@@ -11,22 +11,28 @@ object Metrics {
       def next() = it.next()
     }
 
-  private def breadthFirstSearch(start: Turtle, links: AgentSet): Stream[(Turtle, Int)] = {
+  private def breadthFirstSearch(start: Turtle, links: AgentSet): Stream[List[Turtle]] = {
     val linkManager = start.world.linkManager
     val seen = collection.mutable.HashSet[Turtle](start)
-    def neighbors(node: Turtle) =
-      asScala(
-        (if (links.isDirected)
-           linkManager.findLinkedFrom(node, links)
-         else
-           linkManager.findLinkedWith(node, links))
-        .iterator).collect{case t: Turtle if !seen(t) => seen += t; t }
-    def nextLayer(layer: Stream[(Turtle, Int)]) =
+    def neighbors(node: Turtle) = {
+      val next =
+        if (links.isDirected)
+          linkManager.findLinkedFrom(node, links)
+        else
+          linkManager.findLinkedWith(node, links)
+      asScala(next.iterator)
+        .collect{
+          case t: Turtle if !seen(t) =>
+            seen += t
+            t
+          }
+    }
+    def nextLayer(layer: Stream[List[Turtle]]) =
       for {
-        (turtle, depth) <- layer
-        neighbor <- neighbors(turtle)
-      } yield (neighbor, depth + 1)
-    Stream.iterate(Stream((start, 0)))(nextLayer)
+        path <- layer
+        neighbor <- neighbors(path.head)
+      } yield neighbor :: path
+    Stream.iterate(Stream(List(start)))(nextLayer)
       .takeWhile(_.nonEmpty)
       .flatten
   }
@@ -38,8 +44,8 @@ object Metrics {
    */
   def linkDistance(start: Turtle, end: Turtle, links: AgentSet): Int =
     breadthFirstSearch(start, links)
-      .find(_._1 eq end)
-      .map(_._2)
+      .find(_.head eq end)
+      .map(_.size - 1)
       .getOrElse(-1)
 
   /**
@@ -51,8 +57,8 @@ object Metrics {
   def extendedLinkNeighbors(start: Turtle, radius: Double, links: AgentSet): AgentSet = {
     val resultArray =
       breadthFirstSearch(start, links)
-        .takeWhile(_._2 <= radius)
-        .map(_._1)
+        .takeWhile(_.tail.size <= radius)
+        .map(_.head)
         .toArray[Agent]
     new ArrayAgentSet(classOf[Turtle], resultArray, start.world)
   }
