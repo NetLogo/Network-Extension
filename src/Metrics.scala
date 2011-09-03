@@ -1,258 +1,236 @@
 package org.nlogo.extensions.network
 
 import org.nlogo.api.{ LogoList, LogoListBuilder }
+import org.nlogo.agent.{ LinkManager, Turtle, AgentSet }
 
 class Metrics(linkManager: LinkManager) {
 
   /**
-   * This method performs a BFS from the sourceNode,
-   * following the network imposed by the given linkBreed,
-   * going up to radius layers out, and only collecting
-   * nodes that are members of sourceSet.
-   * <p/>
-   * Note: this method follows directed links both directions.
-   * But we could change its functionality when dealing with
-   * directed links -- I'm not sure what the right thing is.
+   * This method performs a BFS from the sourceNode, following the network imposed by the given
+   * linkBreed, going up to radius layers out, and only collecting nodes that are members of
+   * sourceSet.
+   * 
+   * Note: this method follows directed links both directions.  But we could change its
+   * functionality when dealing with directed links -- I'm not sure what the right thing is.
    * ~Forrest (5/11/2007)
    */
-  public Set<Turtle> inNetworkRadius(Turtle sourceNode, AgentSet sourceSet,
-                                     double radius, AgentSet linkBreed) {
-    HashSet<Turtle> seen = new HashSet<Turtle>();
-    HashSet<Turtle> visited = new HashSet<Turtle>();
-    LinkedList<Turtle> queue = new LinkedList<Turtle>();
-    queue.addLast(sourceNode);
-    seen.add(sourceNode);
-    // we use null to mark radius-layer boundaries
-    queue.addLast(null);
-
-    int layer = 0;
-    while (layer <= radius) {
-      Turtle curNode = queue.removeFirst();
-      if (curNode == null) {
-        if (queue.isEmpty()) {
-          break;
-        }
-        layer++;
-        queue.addLast(null);
-        continue;
+  def inNetworkRadius(sourceNode: Turtle, sourceSet: AgentSet, radius: Double, linkBreed: AgentSet): collection.Set[Turtle] = {
+    val seen = collection.mutable.Set[Turtle]()
+    val visited = collection.mutable.Set[Turtle]()
+    val queue = collection.mutable.Queue[Option[Turtle]]()
+    queue += Some(sourceNode)
+    seen += sourceNode
+    // we use None to mark radius-layer boundaries
+    queue += None
+    var layer = 0
+    var done = false
+    while (!done && layer <= radius) {
+      val curNode = queue.dequeue()
+      if (curNode == None && queue.isEmpty)
+        done = true
+      else if(curNode == None) {
+        layer += 1
+        queue += None
       }
-      visited.add(curNode);
-      AgentSet neighborSet = linkManager.findLinkedWith(curNode,
-          linkBreed);
-      for (AgentSet.Iterator it = neighborSet.iterator(); it.hasNext();) {
-        Turtle toAdd = (Turtle) it.next();
-        if (!seen.contains(toAdd)) {
-          seen.add(toAdd);
-          queue.add(toAdd);
+      else {
+        visited.add(curNode.get)
+        val neighborSet = linkManager.findLinkedWith(curNode.get, linkBreed)
+        val it = neighborSet.iterator()
+        while(it.hasNext) {
+          val toAdd = it.next().asInstanceOf[Turtle]
+          if (!seen(toAdd)) {
+            seen += toAdd
+            queue += Some(toAdd)
+          }
         }
       }
     }
-    queue.clear();
-    seen.clear();
-
-    HashSet<Turtle> result = new HashSet<Turtle>();
+    queue.clear()
+    seen.clear()
+    val result = collection.mutable.Set[Turtle]()
     // filter, so we only have agents from sourceSet
-    for (Turtle node : visited) {
-      if (sourceSet.contains(node)) {
-        result.add(node);
-      }
-    }
-    return result;
+    for (node <- visited)
+      if (sourceSet.contains(node))
+        result += node
+    result
   }
 
   /**
-   * This method performs a BFS from the sourceNode,
-   * following the network imposed by the given linkBreed,
-   * to find the distance to destNode.
-   * Directed links are only followed in the "forward" direction.
-   * It returns -1 if there is no path between the two nodes.
-   * ~Forrest (5/11/2007)
+   * This method performs a BFS from the sourceNode, following the network imposed by the given
+   * linkBreed, to find the distance to destNode.  Directed links are only followed in the "forward"
+   * direction.  It returns -1 if there is no path between the two nodes.  ~Forrest (5/11/2007)
    */
-  public int networkDistance(Turtle sourceNode, Turtle destNode,
-                             AgentSet linkBreed) {
-    boolean isDirectedBreed = linkBreed.isDirected();
-    HashSet<Turtle> seen = new HashSet<Turtle>();
-    LinkedList<Turtle> queue = new LinkedList<Turtle>();
-    queue.addLast(sourceNode);
-    seen.add(sourceNode);
-    // we use null to mark radius-layer boundaries
-    queue.addLast(null);
-
-    int layer = 0;
-    while (true) {
-      Turtle curNode = queue.removeFirst();
-      if (curNode == null) {
-        if (queue.isEmpty()) {
-          break;
-        }
-        layer++;
-        queue.addLast(null);
-        continue;
+  def networkDistance(sourceNode: Turtle, destNode: Turtle, linkBreed: AgentSet): Int = {
+    val isDirectedBreed = linkBreed.isDirected
+    val seen = collection.mutable.HashSet[Turtle]()
+    val queue = collection.mutable.Queue[Option[Turtle]]()
+    queue += Some(sourceNode)
+    seen += sourceNode
+    // we use None to mark radius-layer boundaries
+    queue += None
+    var layer = 0
+    var done = false
+    while (!done) {
+      val curNode = queue.dequeue()
+      if (curNode == None && queue.isEmpty)
+        done = true
+      else if(curNode == None) {
+        layer += 1
+        queue += None
       }
-      if (curNode == destNode) {
-        return layer;
-      }
-      AgentSet neighborSet;
-      if (isDirectedBreed) {
-        neighborSet = linkManager.findLinkedFrom(curNode, linkBreed);
-      } else {
-        neighborSet = linkManager.findLinkedWith(curNode, linkBreed);
-      }
-      for (AgentSet.Iterator it = neighborSet.iterator(); it.hasNext();) {
-        Turtle toAdd = (Turtle) it.next();
-        if (!seen.contains(toAdd)) {
-          seen.add(toAdd);
-          queue.add(toAdd);
+      else {
+        if (curNode eq destNode)
+          return layer
+        val neighborSet =
+          if (isDirectedBreed)
+            linkManager.findLinkedFrom(curNode.get, linkBreed)
+          else
+            linkManager.findLinkedWith(curNode.get, linkBreed)
+        val it = neighborSet.iterator
+        while(it.hasNext) {
+          val toAdd = it.next().asInstanceOf[Turtle]
+          if (!seen(toAdd)) {
+            seen += toAdd
+            queue += Some(toAdd)
+          }
         }
       }
     }
-    return -1;
+    -1
   }
 
   /**
-   * This method performs a BFS from the sourceNode,
-   * following the network imposed by the given linkBreed,
-   * to find the shortest path to destNode.
-   * Directed links are only followed in the "forward" direction.
-   * <p/>
-   * It returns an empty list if there is no path between the two nodes.
-   * The BFS proceeds in a random order, so if there are multiple
-   * shortest paths, a random one will be returned.
-   * Note, however, that the probability distribution of this random
-   * choice is subtly different from if we had enumerated *all* shortest
-   * paths, and chose one of them uniformly at random.
-   * I don't think there is an efficient way to implement it that other way.
-   * ~Forrest (5/11/2007)
+   * This method performs a BFS from the sourceNode, following the network imposed by the given
+   * linkBreed, to find the shortest path to destNode.  Directed links are only followed in the
+   * "forward" direction.
+   * 
+   * It returns an empty list if there is no path between the two nodes.  The BFS proceeds in a
+   * random order, so if there are multiple shortest paths, a random one will be returned.  Note,
+   * however, that the probability distribution of this random choice is subtly different from if we
+   * had enumerated *all* shortest paths, and chose one of them uniformly at random.  I don't think
+   * there is an efficient way to implement it that other way.  ~Forrest (5/11/2007)
    */
-  public LogoList networkShortestPathNodes(org.nlogo.util.MersenneTwisterFast random,
-                                           Turtle sourceNode, Turtle destNode,
-                                           AgentSet linkBreed) {
-    LogoListBuilder path = new LogoListBuilder();
-    if (sourceNode.equals(destNode)) {
-      path.add(sourceNode);
-      return path.toLogoList();
+  def networkShortestPathNodes(random: org.nlogo.util.MersenneTwisterFast,
+                               sourceNode: Turtle, destNode: Turtle,
+                               linkBreed: AgentSet): LogoList = {
+    val path = new LogoListBuilder
+    if (sourceNode eq destNode) {
+      path.add(sourceNode)
+      path.toLogoList
     }
-    boolean isDirectedBreed = linkBreed.isDirected();
-    // we use this HashMap to track which nodes have been seen
-    // by the BFS, as well as who their "parents" are, so we can
-    // walk the path back to the source.
-    HashMap<Turtle, Turtle> seenParents = new HashMap<Turtle, Turtle>();
-    LinkedList<Turtle> queue = new LinkedList<Turtle>();
-    queue.addLast(sourceNode);
-    seenParents.put(sourceNode, null);
-
-    while (!queue.isEmpty()) {
-      Turtle curNode = queue.removeFirst();
-
-      AgentSet neighborSet;
-      if (isDirectedBreed) {
-        neighborSet = linkManager.findLinkedFrom(curNode, linkBreed);
-      } else {
-        neighborSet = linkManager.findLinkedWith(curNode, linkBreed);
-      }
-      for (AgentSet.Iterator it = neighborSet.shufflerator(random);
-           it.hasNext();) {
-        Turtle toAdd = (Turtle) it.next();
-        if (toAdd.equals(destNode)) {
-          path.add(destNode);
-          Turtle agt = curNode;
+    val isDirectedBreed = linkBreed.isDirected
+    // we use this HashMap to track which nodes have been seen by the BFS, as well as who their
+    // "parents" are, so we can walk the path back to the source.
+    val seenParents = collection.mutable.HashMap[Turtle, Option[Turtle]]()
+    val queue = collection.mutable.Queue[Turtle]()
+    queue += sourceNode
+    seenParents(sourceNode) = None
+    while (queue.nonEmpty) {
+      val curNode = queue.dequeue()
+      val neighborSet =
+        if (isDirectedBreed)
+          linkManager.findLinkedFrom(curNode, linkBreed)
+        else
+        linkManager.findLinkedWith(curNode, linkBreed)
+      val it = neighborSet.shufflerator(random)
+      while(it.hasNext) {
+        val toAdd = it.next().asInstanceOf[Turtle]
+        if (toAdd eq destNode) {
+          path.add(destNode)
+          var agt = curNode
           while (agt != null) {
-            path.add(agt);
-            agt = seenParents.get(agt);
+            path.add(agt)
+            agt = seenParents.get(agt).orNull
           }
-          return path.toLogoList();
+          return path.toLogoList
         }
-        if (!seenParents.containsKey(toAdd)) {
-          seenParents.put(toAdd, curNode);
-          queue.add(toAdd);
+        if (!seenParents.contains(toAdd)) {
+          seenParents(toAdd) = Some(curNode)
+          queue += toAdd
         }
       }
     }
-    return LogoList.Empty();
+    LogoList.Empty
   }
 
-  public LogoList networkShortestPathLinks(org.nlogo.util.MersenneTwisterFast random,
-                                           Turtle sourceNode, Turtle destNode, AgentSet linkBreed) {
-    LogoList pathNodes = networkShortestPathNodes(random, sourceNode,
-        destNode, linkBreed);
-    LogoListBuilder pathLinks = new LogoListBuilder();
-    if (pathNodes.size() <= 1) {
-      return pathLinks.toLogoList(); // empty
+  def networkShortestPathLinks(random: org.nlogo.util.MersenneTwisterFast,
+                               sourceNode: Turtle, destNode: Turtle, linkBreed: AgentSet): LogoList = {
+    val pathNodes = networkShortestPathNodes(random, sourceNode, destNode, linkBreed)
+    val pathLinks = new LogoListBuilder
+    if (pathNodes.size <= 1)
+      LogoList.Empty
+    else {
+      val it = pathNodes.iterator
+      var t1 = it.next().asInstanceOf[Turtle]
+      while (it.hasNext) {
+        val t2 = it.next().asInstanceOf[Turtle]
+        pathLinks.add(linkManager.findLink(t1, t2, linkBreed, true))
+        t1 = t2
+      }
+      pathLinks.toLogoList
     }
-    Iterator<Object> it = pathNodes.iterator();
-    Turtle t1 = (Turtle) it.next();
-    while (it.hasNext()) {
-      Turtle t2 = (Turtle) it.next();
-      pathLinks.add(linkManager.findLink(t1, t2, linkBreed, true));
-      t1 = t2;
-    }
-
-    return pathLinks.toLogoList();
   }
-
 
   /**
-   * Calculates the mean shortest-path length between all (distinct) pairs
-   * of nodes in the given nodeSet, by traveling along links of the given linkBreed.
-   * <p/>
+   * Calculates the mean shortest-path length between all (distinct) pairs of nodes in the given
+   * nodeSet, by traveling along links of the given linkBreed.
+   * 
    * It returns -1 if any two nodes in nodeSet are not connected by a path.
-   * <p/>
-   * Note: this method follows directed links both directions.
-   * But we could change its functionality when dealing with
-   * directed links -- I'm not sure what the right thing is.
-   * Seems like often the mean path length (when only following
-   * links "forward)in a directed-graph would be undefined.
-   * <p/>
+   * 
+   * Note: this method follows directed links both directions.  But we could change its
+   * functionality when dealing with directed links -- I'm not sure what the right thing is.  Seems
+   * like often the mean path length (when only following links "forward") in a directed-graph would
+   * be undefined.
+   * 
    * ~Forrest (5/11/2007)
    */
-  public double meanPathLength(AgentSet nodeSet, AgentSet linkBreed) {
-    HashSet<Turtle> seen = new HashSet<Turtle>();
-    LinkedList<Turtle> queue = new LinkedList<Turtle>();
-    long totalSum = 0;
-
-    for (AgentSet.Iterator it2 = nodeSet.iterator(); it2.hasNext();) {
-      Turtle agt = (Turtle) it2.next();
-      int nodeSetVisitedCount = 0;
+  def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Double = {
+    val seen = collection.mutable.HashSet[Turtle]()
+    val queue = collection.mutable.Queue[Option[Turtle]]()
+    var totalSum = 0L
+    val it2 = nodeSet.iterator
+    while(it2.hasNext) {
+      val agt = it2.next().asInstanceOf[Turtle]
+      var nodeSetVisitedCount = 0
       seen.clear();
-      seen.add(agt);
-      queue.addLast(agt);
-      // we use null to mark radius-layer boundaries
-      queue.addLast(null);
-
-      int layer = 0;
+      seen += agt
+      queue += Some(agt)
+      // we use None to mark radius-layer boundaries
+      queue += None
+      var layer = 0
+      var done = false
       while (true) {
-        Turtle curNode = queue.removeFirst();
-        if (curNode == null) {
-          if (queue.isEmpty()) {
-            break;
+        val curNode = queue.dequeue()
+        if (curNode == None && queue.isEmpty)
+          done = true
+        else if (curNode == None) {
+          layer += 1
+          queue += None
+        }
+        else {
+          if (nodeSet.contains(curNode.get)) {
+            totalSum += layer
+            nodeSetVisitedCount += 1
           }
-          layer++;
-          queue.addLast(null);
-          continue;
-        }
-        if (nodeSet.contains(curNode)) {
-          totalSum += layer;
-          nodeSetVisitedCount++;
-        }
-
-        AgentSet neighborSet = linkManager.findLinkedWith(curNode, linkBreed);
-        for (AgentSet.Iterator it = neighborSet.iterator(); it.hasNext();) {
-          Turtle toAdd = (Turtle) it.next();
-          if (!seen.contains(toAdd)) {
-            seen.add(toAdd);
-            queue.add(toAdd);
+          val neighborSet = linkManager.findLinkedWith(curNode.get, linkBreed)
+          val it = neighborSet.iterator
+          while(it.hasNext) {
+            val toAdd = it.next().asInstanceOf[Turtle]
+            if (!seen(toAdd)) {
+              seen += toAdd
+              queue += Some(toAdd)
+            }
           }
         }
-      }
-      if (nodeSetVisitedCount != nodeSet.count()) {
-        return -1.0;
+        if (nodeSetVisitedCount != nodeSet.count)
+          return -1.0
       }
     }
-    int nodeCount = nodeSet.count();
-    if (nodeCount == 1) {
-      return 0;
-    }
-    return (double) totalSum / (nodeCount * (nodeCount - 1));
+    val nodeCount = nodeSet.count
+    if (nodeCount == 1)
+      0
+    else
+      totalSum.toDouble / (nodeCount * (nodeCount - 1))
   }
 
 }
