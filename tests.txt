@@ -1,0 +1,10 @@
+# primManager.addPrimitive("in-link-radius", new InLinkRadius)
+# primManager.addPrimitive("link-distance", new LinkDistance)
+# primManager.addPrimitive("mean-path-length", new MeanPathLength)
+# primManager.addPrimitive("path-links", new PathLinks)
+# primManager.addPrimitive("path-turtles", new PathTurtles)
+
+ZeroDistance
+  extensions [network]
+  O> crt 1
+  [network:link-distance turtle 0 links] of turtle 0 => 0
