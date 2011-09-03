@@ -1,7 +1,7 @@
 package org.nlogo.extensions.network
 
 import org.nlogo.api.{ LogoList, LogoListBuilder }
-import org.nlogo.agent.{ LinkManager, Agent, AgentSet, Turtle }
+import org.nlogo.agent.{ LinkManager, Agent, Turtle, AgentSet, ArrayAgentSet }
 
 object Metrics {
 
@@ -13,20 +13,18 @@ object Metrics {
 
   private def breadthFirstSearch(start: Turtle, links: AgentSet): Stream[(Turtle, Int)] = {
     val linkManager = start.world.linkManager
-    val seen = collection.mutable.HashSet[Turtle]()
-    def neighbors(node: Turtle) = {
-      seen += node
+    val seen = collection.mutable.HashSet[Turtle](start)
+    def neighbors(node: Turtle) =
       asScala(
         (if (links.isDirected)
            linkManager.findLinkedFrom(node, links)
          else
            linkManager.findLinkedWith(node, links))
-        .iterator).collect{case t: Turtle => t}
-    }
+        .iterator).collect{case t: Turtle if !seen(t) => seen += t; t }
     def nextLayer(layer: Stream[(Turtle, Int)]) =
       for {
         (turtle, depth) <- layer
-        neighbor <- neighbors(turtle) if !seen(neighbor)
+        neighbor <- neighbors(turtle)
       } yield (neighbor, depth + 1)
     Stream.iterate(Stream((start, 0)))(nextLayer)
       .takeWhile(_.nonEmpty)
@@ -36,60 +34,27 @@ object Metrics {
   /**
    * This method performs a BFS from the sourceNode, following the network imposed by the given
    * linkBreed, to find the distance to destNode.  Directed links are only followed in the "forward"
-   * direction.  It returns -1 if there is no path between the two nodes.  ~Forrest (5/11/2007)
+   * direction.  It returns -1 if there is no path between the two nodes.
    */
-  def networkDistance(start: Turtle, end: Turtle, links: AgentSet): Int =
-    breadthFirstSearch(start, links).find(_._1 eq end).map(_._2).getOrElse(-1)
+  def linkDistance(start: Turtle, end: Turtle, links: AgentSet): Int =
+    breadthFirstSearch(start, links)
+      .find(_._1 eq end)
+      .map(_._2)
+      .getOrElse(-1)
 
   /**
    * This method performs a BFS from the sourceNode, following the network imposed by the given
-   * linkBreed, going up to radius layers out, and only collecting nodes that are members of
-   * sourceSet.
+   * linkBreed, going up to radius layers out.
    * 
-   * Note: this method follows directed links both directions.  But we could change its
-   * functionality when dealing with directed links -- I'm not sure what the right thing is.
-   * ~Forrest (5/11/2007)
+   * Note: this method follows directed links only in one direction.
    */
-  def inLinkRadius(sourceNode: Turtle, sourceSet: AgentSet, radius: Double, linkBreed: AgentSet): collection.Set[Turtle] = {
-    val linkManager = sourceNode.world.linkManager
-    val seen = collection.mutable.Set[Turtle]()
-    val visited = collection.mutable.Set[Turtle]()
-    val queue = collection.mutable.Queue[Option[Turtle]]()
-    queue += Some(sourceNode)
-    seen += sourceNode
-    // we use None to mark radius-layer boundaries
-    queue += None
-    var layer = 0
-    var done = false
-    while (!done && layer <= radius) {
-      val curNode = queue.dequeue()
-      if (curNode == None && queue.isEmpty)
-        done = true
-      else if(curNode == None) {
-        layer += 1
-        queue += None
-      }
-      else {
-        visited.add(curNode.get)
-        val neighborSet = linkManager.findLinkedWith(curNode.get, linkBreed)
-        val it = neighborSet.iterator()
-        while(it.hasNext) {
-          val toAdd = it.next().asInstanceOf[Turtle]
-          if (!seen(toAdd)) {
-            seen += toAdd
-            queue += Some(toAdd)
-          }
-        }
-      }
-    }
-    queue.clear()
-    seen.clear()
-    val result = collection.mutable.Set[Turtle]()
-    // filter, so we only have agents from sourceSet
-    for (node <- visited)
-      if (sourceSet.contains(node))
-        result += node
-    result
+  def extendedLinkNeighbors(start: Turtle, radius: Double, links: AgentSet): AgentSet = {
+    val resultArray =
+      breadthFirstSearch(start, links)
+        .takeWhile(_._2 <= radius)
+        .map(_._1)
+        .toArray[Agent]
+    new ArrayAgentSet(classOf[Turtle], resultArray, start.world)
   }
 
   /**
@@ -101,7 +66,7 @@ object Metrics {
    * random order, so if there are multiple shortest paths, a random one will be returned.  Note,
    * however, that the probability distribution of this random choice is subtly different from if we
    * had enumerated *all* shortest paths, and chose one of them uniformly at random.  I don't think
-   * there is an efficient way to implement it that other way.  ~Forrest (5/11/2007)
+   * there is an efficient way to implement it that other way.
    */
   def pathNodes(random: org.nlogo.util.MersenneTwisterFast, sourceNode: Turtle,
                 destNode: Turtle, linkBreed: AgentSet): LogoList = {
@@ -175,8 +140,6 @@ object Metrics {
    * functionality when dealing with directed links -- I'm not sure what the right thing is.  Seems
    * like often the mean path length (when only following links "forward") in a directed-graph would
    * be undefined.
-   * 
-   * ~Forrest (5/11/2007)
    */
   def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Double = {
     var linkManager: LinkManager = null

@@ -6,8 +6,8 @@ import org.nlogo.api.{
 
 class NetworkExtension extends DefaultClassManager {
   override def load(primManager: PrimitiveManager) {
-    primManager.addPrimitive("in-link-radius", new InLinkRadius)
     primManager.addPrimitive("link-distance", new LinkDistance)
+    primManager.addPrimitive("extended-link-neighbors", new ExtendedLinkNeighbors)
     primManager.addPrimitive("mean-path-length", new MeanPathLength)
     primManager.addPrimitive("path-links", new PathLinks)
     primManager.addPrimitive("path-turtles", new PathTurtles)
@@ -36,25 +36,19 @@ trait Helpers {
 
 /// primitives
 
-class InLinkRadius extends DefaultReporter with Helpers {
+class ExtendedLinkNeighbors extends DefaultReporter with Helpers {
   override def getSyntax =
-    Syntax(
-      left = Syntax.TurtlesetType,
-      right = Array(Syntax.NumberType, Syntax.LinksetType),
-      ret = Syntax.TurtlesetType,
-      precedence = Syntax.NormalPrecedence + 2,
-      agentClassString = "-T--")
+    Syntax.reporterSyntax(
+      Array(Syntax.NumberType, Syntax.LinksetType),
+      Syntax.TurtlesetType, agentClassString = "-T--")
   override def report(args: Array[Argument], context: Context) = {
-    val sourceSet = args(0).getAgentSet
-    val radius = args(1).getDoubleValue
-    val linkBreed = args(2).getAgentSet
-    requireTurtleset(sourceSet)
+    val radius = args(0).getDoubleValue
+    val linkBreed = args(1).getAgentSet
     if (radius < 0)
       throw new ExtensionException("radius cannot be negative")
     requireLinkBreed(context, linkBreed)
-    Metrics.inLinkRadius(
+    Metrics.extendedLinkNeighbors(
       context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
-      sourceSet.asInstanceOf[org.nlogo.agent.AgentSet],
       radius, linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
   }
 }
@@ -70,9 +64,10 @@ class LinkDistance extends DefaultReporter with Helpers {
     requireLinkBreed(context, linkBreed)
     requireAlive(destNode)
     java.lang.Double.valueOf(
-      Metrics.networkDistance(context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
-                              destNode.asInstanceOf[org.nlogo.agent.Turtle],
-                              linkBreed.asInstanceOf[org.nlogo.agent.AgentSet]))
+      Metrics.linkDistance(
+        context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
+        destNode.asInstanceOf[org.nlogo.agent.Turtle],
+        linkBreed.asInstanceOf[org.nlogo.agent.AgentSet]))
   }
 }
 

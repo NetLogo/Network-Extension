@@ -7,3 +7,6 @@ TODO:
   (even if we don't do that now, I guess we ought to give the prim names
   that all have "link" in them?)
 - keep -1 as sentinel value, or use false instead?
+- split in-link-radius into in-, in-in-, in-out-
+- I got rid of the sourceSet arg to in-link-radius, is that OK?
+- should the extended neighborhoods include the turtle itself?
