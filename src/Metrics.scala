@@ -5,28 +5,28 @@ import org.nlogo.agent.{ LinkManager, Agent, Turtle, AgentSet, ArrayAgentSet }
 
 object Metrics {
 
-  private def asScala(it: AgentSet.Iterator): Iterator[Agent] =
-    new Iterator[Agent] {
+  // make agentset iterators easier to use in Scala
+  private def asScala[T <: Agent](it: AgentSet.Iterator): Iterator[T] =
+    new Iterator[T] {
       def hasNext = it.hasNext
-      def next() = it.next()
+      def next() = it.next().asInstanceOf[T]
     }
 
   private def breadthFirstSearch(start: Turtle, links: AgentSet): Stream[List[Turtle]] = {
-    val linkManager = start.world.linkManager
-    val seen = collection.mutable.HashSet[Turtle](start)
-    def neighbors(node: Turtle) = {
-      val next =
-        if (links.isDirected)
-          linkManager.findLinkedFrom(node, links)
-        else
-          linkManager.findLinkedWith(node, links)
-      asScala(next.iterator)
-        .collect{
-          case t: Turtle if !seen(t) =>
-            seen += t
-            t
-          }
+    val seen: Turtle => Boolean = {
+      val memory = collection.mutable.HashSet[Turtle](start)
+      t => memory(t) || { memory += t; false }
     }
+    val neighborFinder: Turtle => AgentSet = {
+      val linkManager = start.world.linkManager
+      if (links.isDirected)
+        linkManager.findLinkedFrom(_, links)
+      else
+        linkManager.findLinkedWith(_, links)
+    }
+    def neighbors(node: Turtle): Iterator[Turtle] =
+      asScala(neighborFinder(node).iterator)
+        .filterNot(seen)
     def nextLayer(layer: Stream[List[Turtle]]) =
       for {
         path <- layer
