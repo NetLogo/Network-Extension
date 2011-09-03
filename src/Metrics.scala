@@ -1,9 +1,45 @@
 package org.nlogo.extensions.network
 
 import org.nlogo.api.{ LogoList, LogoListBuilder }
-import org.nlogo.agent.{ LinkManager, Turtle, AgentSet }
+import org.nlogo.agent.{ LinkManager, Agent, AgentSet, Turtle }
 
 object Metrics {
+
+  private def asScala(it: AgentSet.Iterator): Iterator[Agent] =
+    new Iterator[Agent] {
+      def hasNext = it.hasNext
+      def next() = it.next()
+    }
+
+  private def breadthFirstSearch(start: Turtle, links: AgentSet): Stream[(Turtle, Int)] = {
+    val linkManager = start.world.linkManager
+    val seen = collection.mutable.HashSet[Turtle]()
+    def neighbors(node: Turtle) = {
+      seen += node
+      asScala(
+        (if (links.isDirected)
+           linkManager.findLinkedFrom(node, links)
+         else
+           linkManager.findLinkedWith(node, links))
+        .iterator).collect{case t: Turtle => t}
+    }
+    def nextLayer(layer: Stream[(Turtle, Int)]) =
+      for {
+        (turtle, depth) <- layer
+        neighbor <- neighbors(turtle) if !seen(neighbor)
+      } yield (neighbor, depth + 1)
+    Stream.iterate(Stream((start, 0)))(nextLayer)
+      .takeWhile(_.nonEmpty)
+      .flatten
+  }
+    
+  /**
+   * This method performs a BFS from the sourceNode, following the network imposed by the given
+   * linkBreed, to find the distance to destNode.  Directed links are only followed in the "forward"
+   * direction.  It returns -1 if there is no path between the two nodes.  ~Forrest (5/11/2007)
+   */
+  def networkDistance(start: Turtle, end: Turtle, links: AgentSet): Int =
+    breadthFirstSearch(start, links).find(_._1 eq end).map(_._2).getOrElse(-1)
 
   /**
    * This method performs a BFS from the sourceNode, following the network imposed by the given
@@ -54,51 +90,6 @@ object Metrics {
       if (sourceSet.contains(node))
         result += node
     result
-  }
-
-  /**
-   * This method performs a BFS from the sourceNode, following the network imposed by the given
-   * linkBreed, to find the distance to destNode.  Directed links are only followed in the "forward"
-   * direction.  It returns -1 if there is no path between the two nodes.  ~Forrest (5/11/2007)
-   */
-  def networkDistance(sourceNode: Turtle, destNode: Turtle, linkBreed: AgentSet): Int = {
-    val linkManager = sourceNode.world.linkManager
-    val isDirectedBreed = linkBreed.isDirected
-    val seen = collection.mutable.HashSet[Turtle]()
-    val queue = collection.mutable.Queue[Option[Turtle]]()
-    queue += Some(sourceNode)
-    seen += sourceNode
-    // we use None to mark radius-layer boundaries
-    queue += None
-    var layer = 0
-    var done = false
-    while (!done) {
-      val curNode = queue.dequeue()
-      if (curNode == None && queue.isEmpty)
-        done = true
-      else if(curNode == None) {
-        layer += 1
-        queue += None
-      }
-      else {
-        if (curNode eq destNode)
-          return layer
-        val neighborSet =
-          if (isDirectedBreed)
-            linkManager.findLinkedFrom(curNode.get, linkBreed)
-          else
-            linkManager.findLinkedWith(curNode.get, linkBreed)
-        val it = neighborSet.iterator
-        while(it.hasNext) {
-          val toAdd = it.next().asInstanceOf[Turtle]
-          if (!seen(toAdd)) {
-            seen += toAdd
-            queue += Some(toAdd)
-          }
-        }
-      }
-    }
-    -1
   }
 
   /**

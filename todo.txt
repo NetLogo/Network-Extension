@@ -1,0 +1,9 @@
+TODO:
+- move primitive descriptions out of code and into README.md
+- always use named arguments when constructing Syntax objects?
+- move ArgumentTypeException to api package?
+- rename `type` so backticks aren't needed?
+- "links in the prim names" ought to be replaceable with a breed name.
+  (even if we don't do that now, I guess we ought to give the prim names
+  that all have "link" in them?)
+- keep -1 as sentinel value, or use false instead?

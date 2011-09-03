@@ -1,4 +1,0 @@
-// TODO:
-// - always use named arguments when constructing Syntax objects?
-// - move ArgumentTypeException to api package?
-// - rename `type` so backticks aren't needed?

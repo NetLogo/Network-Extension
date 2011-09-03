@@ -1,10 +1,57 @@
-# primManager.addPrimitive("in-link-radius", new InLinkRadius)
 # primManager.addPrimitive("link-distance", new LinkDistance)
-# primManager.addPrimitive("mean-path-length", new MeanPathLength)
-# primManager.addPrimitive("path-links", new PathLinks)
-# primManager.addPrimitive("path-turtles", new PathTurtles)
 
-ZeroDistance
+distance-to-self
   extensions [network]
   O> crt 1
   [network:link-distance turtle 0 links] of turtle 0 => 0
+
+two-turtles-no-links
+  extensions [network]
+  O> crt 2
+  [network:link-distance turtle 0 links] of turtle 1 => -1
+  [network:link-distance turtle 1 links] of turtle 0 => -1
+
+one-undirected-link
+  extensions [network]
+  O> crt 2 [ create-links-with other turtles ]
+  [network:link-distance turtle 0 links] of turtle 1 => 1
+  [network:link-distance turtle 1 links] of turtle 0 => 1
+
+one-directed-link
+  extensions [network]
+  O> crt 2
+  O> ask turtle 0 [ create-link-to turtle 1 ]
+  [network:link-distance turtle 0 links] of turtle 1 => -1
+  [network:link-distance turtle 1 links] of turtle 0 => 1
+
+distance-always-one-in-fully-connected-network
+  extensions [network]
+  to-report distances report [network:link-distance myself links] of link-neighbors end
+  O> crt 10 [ create-links-with other turtles ]
+  remove-duplicates reduce sentence [distances] of turtles => [1]
+
+distances-along-chain
+  extensions [network]
+  O> crt 5 [ if who < 4 [ create-link-with turtle (who + 1) ] ]
+  sort [network:link-distance turtle 0 links] of turtles => [0 1 2 3 4]
+  sort [network:link-distance turtle 4 links] of turtles => [0 1 2 3 4]
+  sort remove-duplicates [network:link-distance turtle 2 links] of turtles => [0 1 2]
+
+distances-around-circle
+  extensions [network]
+  O> crt 8 [ create-link-with turtle ((who + 1) mod 8) ]
+  sort [network:link-distance turtle 0 links] of turtles => [0 1 1 2 2 3 3 4]
+
+distances-around-two-circles
+  extensions [network]
+  O> crt 8 [ create-link-with turtle ((who + 1) mod 8) ]
+  O> crt 8 [ create-link-with turtle ((who - 8 + 1) mod 8 + 8) ]
+  sort [network:link-distance turtle 0 links] of turtles with [who < 8] => [0 1 1 2 2 3 3 4]
+  sort [network:link-distance turtle 8 links] of turtles with [who >= 8] => [0 1 1 2 2 3 3 4]
+  remove-duplicates [network:link-distance turtle 8 links] of turtles with [who < 8] => [-1]
+  remove-duplicates [network:link-distance turtle 0 links] of turtles with [who >= 8] => [-1]
+
+# primManager.addPrimitive("in-link-radius", new InLinkRadius)
+# primManager.addPrimitive("mean-path-length", new MeanPathLength)
+# primManager.addPrimitive("path-links", new PathLinks)
+# primManager.addPrimitive("path-turtles", new PathTurtles)
