@@ -13,6 +13,9 @@ object Metrics {
       def next() = it.next().asInstanceOf[T]
     }
 
+  // all of the primitives use this to traverse the network in breadth-first order.
+  // each List[Turtle] is a reversed path (destination is head); the paths share
+  // structure so total memory usage stays within O(n).
   private def breadthFirstSearch(start: Turtle, links: AgentSet): Stream[List[Turtle]] = {
     val seen: Turtle => Boolean = {
       val memory = collection.mutable.HashSet[Turtle](start)
@@ -97,7 +100,10 @@ object Metrics {
    * like often the mean path length (when only following links "forward") in a directed-graph would
    * be undefined.
    */
-  def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Double = {
+  def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Double =
+    0
+
+/*
     var linkManager: LinkManager = null
     val seen = collection.mutable.HashSet[Turtle]()
     val queue = collection.mutable.Queue[Option[Turtle]]()
@@ -148,5 +154,6 @@ object Metrics {
     else
       totalSum.toDouble / (nodeCount * (nodeCount - 1))
   }
+*/
 
 }
