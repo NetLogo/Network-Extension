@@ -106,4 +106,39 @@ path-turtles-on-a-circle
 
 ### path-links
 
+path-links-self
+  extensions [network]
+  O> crt 1
+  [network:path-links turtle 0 links] of turtle 0 => []
+
+path-links-no-path
+  extensions [network]
+  O> crt 2
+  [network:path-links turtle 1 links] of turtle 0 => []
+  [network:path-links turtle 0 links] of turtle 1 => []
+
+path-links-undirected-pair
+  extensions [network]
+  O> crt 2 [ create-links-with other turtles ]
+  (word [network:path-links turtle 1 links] of turtle 0) => "[(link 0 1)]"
+  (word [network:path-links turtle 0 links] of turtle 1) => "[(link 0 1)]"
+
+path-links-a-b-c
+  extensions [network]
+  O> crt 3
+  O> ask turtle 0 [ create-link-with turtle 1]
+  O> ask turtle 1 [ create-link-with turtle 2]
+  (word [network:path-links turtle 2 links] of turtle 0) => "[(link 0 1) (link 1 2)]"
+  (word [network:path-links turtle 0 links] of turtle 2) => "[(link 1 2) (link 0 1)]"
+
+path-links-fully-connected
+  extensions [network]
+  O> crt 6 [ create-links-with other turtles ]
+  (word sort map [(word ?)] [network:path-links turtle 0 links] of turtles) => "[[(link 0 1)] [(link 0 2)] [(link 0 3)] [(link 0 4)] [(link 0 5)] []]"
+
+path-links-on-a-circle
+  extensions [network]
+  O> crt 6 [ create-link-with turtle ((who + 1) mod 6) ]
+  sort [length network:path-links turtle 0 links] of turtles => [0 1 1 2 2 3]
+
 ### mean-path-length

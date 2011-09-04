@@ -1,7 +1,7 @@
 package org.nlogo.extensions.network
 
 import org.nlogo.api.{ LogoList, LogoListBuilder }
-import org.nlogo.agent.{ LinkManager, Agent, Turtle, AgentSet, ArrayAgentSet }
+import org.nlogo.agent.{ LinkManager, Agent, Turtle, Link, AgentSet, ArrayAgentSet }
 import org.nlogo.util.{ MersenneTwisterFast => Random }
 
 object Metrics {
@@ -85,8 +85,14 @@ object Metrics {
       .getOrElse(LogoList.Empty)
 
   def pathLinks(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList = {
-    // call pathNodes, then get the links using linkManager.findLink(t1, t2, links, true))
-    LogoList.Empty
+    val linkManager = start.world.linkManager
+    def turtlesToLinks(turtles: List[Turtle]): Iterator[Link] =
+      for((end2, end1) <- turtles.iterator zip turtles.tail.iterator)
+      yield linkManager.findLink(end1, end2, links, true)
+    breadthFirstSearch(start, links)
+      .find(_.head eq end)
+      .map(path => LogoList.fromIterator(turtlesToLinks(path.reverse)))
+      .getOrElse(LogoList.Empty)
   }
 
   /**

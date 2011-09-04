@@ -10,3 +10,5 @@ TODO:
 - split in-link-radius into in-, in-in-, in-out-
 - I got rid of the sourceSet arg to in-link-radius, is that OK?
 - should the extended neighborhoods include the turtle itself?
+- return paths in forward order or reverse order?
+- write tests verifying that directed links aren't followed in the wrong direction
