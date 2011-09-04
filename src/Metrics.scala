@@ -87,7 +87,7 @@ object Metrics {
   def pathLinks(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList = {
     val linkManager = start.world.linkManager
     def turtlesToLinks(turtles: List[Turtle]): Iterator[Link] =
-      for((end2, end1) <- turtles.iterator zip turtles.tail.iterator)
+      for((end1, end2) <- turtles.iterator zip turtles.tail.iterator)
       yield linkManager.findLink(end1, end2, links, true)
     breadthFirstSearch(start, links)
       .find(_.head eq end)

@@ -123,13 +123,21 @@ path-links-undirected-pair
   (word [network:path-links turtle 1 links] of turtle 0) => "[(link 0 1)]"
   (word [network:path-links turtle 0 links] of turtle 1) => "[(link 0 1)]"
 
-path-links-a-b-c
+path-links-a-b-c-undirected
   extensions [network]
   O> crt 3
-  O> ask turtle 0 [ create-link-with turtle 1]
-  O> ask turtle 1 [ create-link-with turtle 2]
+  O> ask turtle 0 [ create-link-with turtle 1 ]
+  O> ask turtle 1 [ create-link-with turtle 2 ]
   (word [network:path-links turtle 2 links] of turtle 0) => "[(link 0 1) (link 1 2)]"
   (word [network:path-links turtle 0 links] of turtle 2) => "[(link 1 2) (link 0 1)]"
+
+path-links-a-b-c-directed
+  extensions [network]
+  O> crt 3
+  O> ask turtle 0 [ create-link-to turtle 1 ]
+  O> ask turtle 1 [ create-link-to turtle 2 ]
+  (word [network:path-links turtle 2 links] of turtle 0) => "[(link 0 1) (link 1 2)]"
+  (word [network:path-links turtle 0 links] of turtle 2) => "[]"
 
 path-links-fully-connected
   extensions [network]
