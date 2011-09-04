@@ -1,4 +1,4 @@
-# primManager.addPrimitive("link-distance", new LinkDistance)
+### link-distance
 
 distance-to-self
   extensions [network]
@@ -51,7 +51,7 @@ distance-around-two-circles
   remove-duplicates [network:link-distance turtle 8 links] of turtles with [who < 8] => [-1]
   remove-duplicates [network:link-distance turtle 0 links] of turtles with [who >= 8] => [-1]
 
-# primManager.addPrimitive("extended-link-neighbors", new ExtendedLinkNeighbors)
+### extended-link-neighbors
 
 neighbordhood-negative-radius
   extensions [network]
@@ -75,6 +75,35 @@ neighborhood-two-circles
   remove-duplicates [count network:extended-link-neighbors 5 links] of turtles => [8]
   remove-duplicates [count network:extended-link-neighbors 1E38 links] of turtles => [8]
 
-# primManager.addPrimitive("path-links", new PathLinks)
-# primManager.addPrimitive("path-turtles", new PathTurtles)
-# primManager.addPrimitive("mean-path-length", new MeanPathLength)
+### path-turtles
+
+path-turtles-self
+  extensions [network]
+  O> crt 1
+  map [[who] of ?] [network:path-turtles turtle 0 links] of turtle 0 => [0]
+
+path-turtles-no-path
+  extensions [network]
+  O> crt 2
+  map [[who] of ?] [network:path-turtles turtle 1 links] of turtle 0 => []
+  map [[who] of ?] [network:path-turtles turtle 0 links] of turtle 1 => []
+
+path-turtles-undirected-pair
+  extensions [network]
+  O> crt 2 [ create-links-with other turtles ]
+  map [[who] of ?] [network:path-turtles turtle 1 links] of turtle 0 => [0 1]
+  map [[who] of ?] [network:path-turtles turtle 0 links] of turtle 1 => [1 0]
+
+path-turtles-fully-connected
+  extensions [network]
+  O> crt 6 [ create-links-with other turtles ]
+  sort [length network:path-turtles turtle 0 links] of turtles => [1 2 2 2 2 2]
+
+path-turtles-on-a-circle
+  extensions [network]
+  O> crt 6 [ create-link-with turtle ((who + 1) mod 6) ]
+  sort [length network:path-turtles turtle 0 links] of turtles => [1 2 2 3 3 4]
+
+### path-links
+
+### mean-path-length
