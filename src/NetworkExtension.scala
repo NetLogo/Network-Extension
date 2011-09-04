@@ -9,8 +9,8 @@ class NetworkExtension extends DefaultClassManager {
     primManager.addPrimitive("link-distance", new LinkDistance)
     primManager.addPrimitive("extended-link-neighbors", new ExtendedLinkNeighbors)
     primManager.addPrimitive("mean-path-length", new MeanPathLength)
-    primManager.addPrimitive("path-links", new PathLinks)
     primManager.addPrimitive("path-turtles", new PathTurtles)
+    primManager.addPrimitive("path-links", new PathLinks)
   }
 }
 
@@ -87,6 +87,23 @@ class MeanPathLength extends DefaultReporter with Helpers {
   }
 }
 
+class PathTurtles extends DefaultReporter with Helpers {
+  override def getSyntax =
+    Syntax.reporterSyntax(
+      Array(Syntax.TurtleType, Syntax.LinksetType),
+      Syntax.ListType, "-T--")
+  override def report(args: Array[Argument], context: Context) = {
+    val destNode = args(0).getTurtle
+    val linkBreed = args(1).getAgentSet
+    requireLinkBreed(context, linkBreed)
+    requireAlive(destNode)
+    Metrics.pathTurtles(
+      context.getRNG, context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
+      destNode.asInstanceOf[org.nlogo.agent.Turtle],
+      linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
+  }
+}
+
 class PathLinks extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
@@ -98,23 +115,6 @@ class PathLinks extends DefaultReporter with Helpers {
     requireLinkBreed(context, linkBreed)
     requireAlive(destNode)
     Metrics.pathLinks(
-      context.getRNG, context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
-      destNode.asInstanceOf[org.nlogo.agent.Turtle],
-      linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
-  }
-}
-
-class PathTurtles extends DefaultReporter with Helpers {
-  override def getSyntax =
-    Syntax.reporterSyntax(
-      Array(Syntax.TurtleType, Syntax.LinksetType),
-      Syntax.ListType, "-T--")
-  override def report(args: Array[Argument], context: Context) = {
-    val destNode = args(0).getTurtle
-    val linkBreed = args(1).getAgentSet
-    requireLinkBreed(context, linkBreed)
-    requireAlive(destNode)
-    Metrics.pathNodes(
       context.getRNG, context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
       destNode.asInstanceOf[org.nlogo.agent.Turtle],
       linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])

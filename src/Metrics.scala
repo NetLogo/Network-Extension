@@ -2,6 +2,7 @@ package org.nlogo.extensions.network
 
 import org.nlogo.api.{ LogoList, LogoListBuilder }
 import org.nlogo.agent.{ LinkManager, Agent, Turtle, AgentSet, ArrayAgentSet }
+import org.nlogo.util.{ MersenneTwisterFast => Random }
 
 object Metrics {
 
@@ -74,66 +75,15 @@ object Metrics {
    * had enumerated *all* shortest paths, and chose one of them uniformly at random.  I don't think
    * there is an efficient way to implement it that other way.
    */
-  def pathNodes(random: org.nlogo.util.MersenneTwisterFast, sourceNode: Turtle,
-                destNode: Turtle, linkBreed: AgentSet): LogoList = {
-    val linkManager = sourceNode.world.linkManager
-    val path = new LogoListBuilder
-    if (sourceNode eq destNode) {
-      path.add(sourceNode)
-      path.toLogoList
-    }
-    val isDirectedBreed = linkBreed.isDirected
-    // we use this HashMap to track which nodes have been seen by the BFS, as well as who their
-    // "parents" are, so we can walk the path back to the source.
-    val seenParents = collection.mutable.HashMap[Turtle, Option[Turtle]]()
-    val queue = collection.mutable.Queue[Turtle]()
-    queue += sourceNode
-    seenParents(sourceNode) = None
-    while (queue.nonEmpty) {
-      val curNode = queue.dequeue()
-      val neighborSet =
-        if (isDirectedBreed)
-          linkManager.findLinkedFrom(curNode, linkBreed)
-        else
-        linkManager.findLinkedWith(curNode, linkBreed)
-      val it = neighborSet.shufflerator(random)
-      while(it.hasNext) {
-        val toAdd = it.next().asInstanceOf[Turtle]
-        if (toAdd eq destNode) {
-          path.add(destNode)
-          var agt = curNode
-          while (agt != null) {
-            path.add(agt)
-            agt = seenParents.get(agt).get.orNull
-          }
-          return path.toLogoList
-        }
-        if (!seenParents.contains(toAdd)) {
-          seenParents(toAdd) = Some(curNode)
-          queue += toAdd
-        }
-      }
-    }
-    LogoList.Empty
-  }
+  def pathTurtles(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList =
+    breadthFirstSearch(start, links)
+      .find(_.head eq end)
+      .map(path => LogoList.fromIterator(path.reverseIterator))
+      .getOrElse(LogoList.Empty)
 
-  def pathLinks(random: org.nlogo.util.MersenneTwisterFast,
-                sourceNode: Turtle, destNode: Turtle, linkBreed: AgentSet): LogoList = {
-    val linkManager = sourceNode.world.linkManager
-    val nodes = pathNodes(random, sourceNode, destNode, linkBreed)
-    val links = new LogoListBuilder
-    if (nodes.size <= 1)
-      LogoList.Empty
-    else {
-      val it = nodes.iterator
-      var t1 = it.next().asInstanceOf[Turtle]
-      while (it.hasNext) {
-        val t2 = it.next().asInstanceOf[Turtle]
-        links.add(linkManager.findLink(t1, t2, linkBreed, true))
-        t1 = t2
-      }
-      links.toLogoList
-    }
+  def pathLinks(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList = {
+    // call pathNodes, then get the links using linkManager.findLink(t1, t2, links, true))
+    LogoList.Empty
   }
 
   /**
