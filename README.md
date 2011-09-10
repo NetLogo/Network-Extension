@@ -21,33 +21,65 @@ It requires NetLogo 5.0beta5, which isn't out yet.
 
 ## Description of primitives in src directory
 
+Anywhere a link breed is required, `links` is also accepted.
+
 ### network:in-link-radius
 
-syntax: `TURTLESET network:in-link-radius RADIUS LINKSET`
+syntax: `TURTLESET network:in-link-radius RADIUS LINK-BREED`
 
 example: `ask one-of bankers [ show other bankers in-network-radius 5 friendships ]`
 
+Returns the set of turtles within the given distance (number of links followed)
+of the calling turtle.
+Searches breadth-first from the calling turtle,
+following links of the given link breed.
+
 ### network:link-distance
 
-syntax: `network:link-distance TURTLE LINK-SET`
+syntax: `network:link-distance TURTLE LINK-BREED`
 
 example: `ask one-of-bankers [ show network:link-distance the-best-banker friendships ]`
 
+Finds the distance to the destination turtle (number of links followed).
+Searches breadth-first from the calling turtle,
+following links of the given link breed.
+
+Reports -1 if no path exists.
+
 ### network:path-turtles
 
-syntax: `network:path-turtles TURTLE LINK-SET`
+syntax: `network:path-turtles TURTLE LINK-BREED`
 
 example: `ask banker1 [ show network:path-turtles banker3 friendships ]`
 ->   [(banker 1) (banker 2) (banker 3)]
  
+Reports a list of turtles following the shortest path from the calling
+turtle to the destination turtle.  The calling turtle and the
+destination are included in the list.
+
+Reports an empty list if no path exists.
+
+Searches breadth-first from the calling turtle,
+following links of the given link breed.
+
+Follows links at the same depth in random order.  If there are
+multiple shortest paths, a different path may be returned on
+subsequent calls, depending on the random choices made during search.
+
 ### network:path-links
 
-syntax: `network:path-links TURTLE LINK-SET`
+syntax: `network:path-links TURTLE LINK-BREED`
 
 example: `ask banker1 [ show network:path-links banker3 friendships ]`
 ->   [(link 1 2) (link 2 3)]
 
-### __average-path-length
+### network:mean-path-length
+
+Reports the average shortest-path length between all distinct pairs of
+nodes in the given set of turtles, following links of the given link
+breed.
+
+Reports -1 if the turtles are not fully connected.
 
 ### Notes
 

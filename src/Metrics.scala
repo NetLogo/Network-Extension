@@ -15,7 +15,7 @@ object Metrics {
 
   // all of the primitives use this to traverse the network in breadth-first order.
   // each List[Turtle] is a reversed path (destination is head); the paths share
-  // structure so total memory usage stays within O(n).
+  // storage, so total memory usage stays within O(n).
   private def breadthFirstSearch(start: Turtle, links: AgentSet): Stream[List[Turtle]] = {
     val seen: Turtle => Boolean = {
       val memory = collection.mutable.HashSet[Turtle](start)
@@ -41,23 +41,12 @@ object Metrics {
       .flatten
   }
     
-  /**
-   * This method performs a BFS from the sourceNode, following the network imposed by the given
-   * linkBreed, to find the distance to destNode.  Directed links are only followed in the "forward"
-   * direction.  It returns -1 if there is no path between the two nodes.
-   */
   def linkDistance(start: Turtle, end: Turtle, links: AgentSet): Int =
     breadthFirstSearch(start, links)
       .find(_.head eq end)
       .map(_.size - 1)
       .getOrElse(-1)
 
-  /**
-   * This method performs a BFS from the sourceNode, following the network imposed by the given
-   * linkBreed, going up to radius layers out.
-   * 
-   * Note: this method follows directed links only in one direction.
-   */
   def extendedLinkNeighbors(start: Turtle, radius: Double, links: AgentSet): AgentSet = {
     val resultArray =
       breadthFirstSearch(start, links)
@@ -67,17 +56,6 @@ object Metrics {
     new ArrayAgentSet(classOf[Turtle], resultArray, start.world)
   }
 
-  /**
-   * This method performs a BFS from the sourceNode, following the network imposed by the given
-   * linkBreed, to find the shortest path to destNode.  Directed links are only followed in the
-   * "forward" direction.
-   * 
-   * It returns an empty list if there is no path between the two nodes.  The BFS proceeds in a
-   * random order, so if there are multiple shortest paths, a random one will be returned.  Note,
-   * however, that the probability distribution of this random choice is subtly different from if we
-   * had enumerated *all* shortest paths, and chose one of them uniformly at random.  I don't think
-   * there is an efficient way to implement it that other way.
-   */
   def pathTurtles(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList =
     breadthFirstSearch(start, links)
       .find(_.head eq end)
@@ -95,20 +73,8 @@ object Metrics {
       .getOrElse(LogoList.Empty)
   }
 
-  /**
-   * Calculates the mean shortest-path length between all (distinct) pairs of nodes in the given
-   * nodeSet, by traveling along links of the given linkBreed.
-   * 
-   * It returns -1 if any two nodes in nodeSet are not connected by a path.
-   * 
-   * Note: this method follows directed links both directions.  But we could change its
-   * functionality when dealing with directed links -- I'm not sure what the right thing is.  Seems
-   * like often the mean path length (when only following links "forward") in a directed-graph would
-   * be undefined.
-   */
   def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Double =
     0
-
 /*
     var linkManager: LinkManager = null
     val seen = collection.mutable.HashSet[Turtle]()
