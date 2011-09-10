@@ -4,19 +4,18 @@ It requires NetLogo 5.0beta5, which isn't out yet.
 
 ## TODO
 
-* move primitive descriptions out of code and into README.md
-* always use named arguments when constructing Syntax objects?
-* move ArgumentTypeException to api package?
-* rename `type` so backticks aren't needed?
+definitely:
+* change `extended-link-neighbors` back to `in-link-radius` and take a sourceSet input
+* keep -1 as sentinel value, or use false instead?
+* split in-link-radius into in-, in-in-, in-out-
 * "links in the prim names" ought to be replaceable with a breed name.
   (even if we don't do that now, I guess we ought to give the prim names
   that all have "link" in them?)
-* keep -1 as sentinel value, or use false instead?
-* split in-link-radius into in-, in-in-, in-out-
-* I got rid of the sourceSet arg to in-link-radius, is that OK?
-  hmm, no, Forrest disagrees, and he convinced me.
-* should the extended neighborhoods include the turtle itself?
-* return paths in forward order or reverse order?
+
+maybe:
+* always use named arguments when constructing Syntax objects?
+* move ArgumentTypeException to api package?
+* rename `type` so backticks aren't needed?
 * write tests verifying that directed links aren't followed in the wrong direction
 
 ## Description of primitives in src directory
@@ -83,14 +82,16 @@ Reports -1 if the turtles are not fully connected.
 
 ### Notes
 
-Note that it is somewhat of an open question how 
-`network:link-distance` should handle distances between two nodes
-that are not reachable via the network.  Also, although these
-reporters were intended to support both directed and undirected
-networks, I'm not positive that they do in all cases.  Also, path
-lengths are computed based solely on the number of hops, and there
-currently isn't any way to specify a "weight/distance" variable for
-the links.
+Although these reporters were intended to support both directed and
+undirected networks, I'm not positive that they do in all cases.  More
+test cases are needed.
+
+It is an open question how `network:link-distance` should handle
+distances between two nodes that are not reachable via the network.
+
+Path lengths are computed based solely on the number of hops.  There
+isn't currently any way to specify a "weight" or "distance" variable
+for links.
 
 ## Transition guide
 
@@ -109,10 +110,10 @@ They were renamed as follows:
 
 The following primitives, present in NetLogo 4.1 but not NetLogo 5.0, are not included in this extension either:
 
-* `__create-network-preferential`, 
+* `__create-network-preferential`
 * `__layout-magspring`
 * `__layout-quick`
-* `__layout-sphere`.
+* `__layout-sphere`
 
 For the source code for these primitives, see [this commit](https://github.com/NetLogo/Network-Extension/commit/eea275e20b5c2a76fc76b8b7642d2a5e7df0a1e4).  But note they are written in the style used by built-in NetLogo primitives. To be brought back to life, they'd need to be changed to use the extensions API instead.
 
