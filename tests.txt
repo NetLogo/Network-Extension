@@ -8,8 +8,8 @@ distance-to-self
 distance-two-turtles-no-links
   extensions [network]
   O> crt 2
-  [network:link-distance turtle 0 links] of turtle 1 => -1
-  [network:link-distance turtle 1 links] of turtle 0 => -1
+  [network:link-distance turtle 0 links] of turtle 1 => false
+  [network:link-distance turtle 1 links] of turtle 0 => false
 
 distance-one-undirected-link
   extensions [network]
@@ -21,7 +21,7 @@ distance-one-directed-link
   extensions [network]
   O> crt 2
   O> ask turtle 0 [ create-link-to turtle 1 ]
-  [network:link-distance turtle 0 links] of turtle 1 => -1
+  [network:link-distance turtle 0 links] of turtle 1 => false
   [network:link-distance turtle 1 links] of turtle 0 => 1
 
 distance-always-one-in-fully-connected-network
@@ -48,8 +48,8 @@ distance-around-two-circles
   O> crt 8 [ create-link-with turtle ((who - 8 + 1) mod 8 + 8) ]
   sort [network:link-distance turtle 0 links] of turtles with [who < 8] => [0 1 1 2 2 3 3 4]
   sort [network:link-distance turtle 8 links] of turtles with [who >= 8] => [0 1 1 2 2 3 3 4]
-  remove-duplicates [network:link-distance turtle 8 links] of turtles with [who < 8] => [-1]
-  remove-duplicates [network:link-distance turtle 0 links] of turtles with [who >= 8] => [-1]
+  remove-duplicates [network:link-distance turtle 8 links] of turtles with [who < 8] => [false]
+  remove-duplicates [network:link-distance turtle 0 links] of turtles with [who >= 8] => [false]
 
 ### extended-link-neighbors
 

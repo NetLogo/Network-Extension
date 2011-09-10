@@ -7,7 +7,6 @@ It requires NetLogo 5.0beta5, which isn't out yet.
 definitely:
 
 * change `extended-link-neighbors` back to `in-link-radius` and take a sourceSet input
-* keep -1 as sentinel value, or use false instead?
 * split in-link-radius into in-, in-in-, in-out-
 * "links in the prim names" ought to be replaceable with a breed name.
   (even if we don't do that now, I guess we ought to give the prim names
@@ -52,20 +51,26 @@ Finds the distance to the destination turtle (number of links followed).
 Searches breadth-first from the calling turtle,
 following links of the given link breed.
 
-Reports -1 if no path exists.
+Reports false if no path exists.
 
-### network:path-turtles
+### network:path-turtles, network:path-links
 
-![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-turtles TURTLE LINK-BREED`
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-turtles TURTLE LINK-BREED`  
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-links TURTLE LINK-BREED`
 
-example: `ask banker1 [ show network:path-turtles banker3 friendships ]`
+example:`ask banker1 [ show network:path-turtles banker3 friendships ]`
 ->   [(banker 1) (banker 2) (banker 3)]
  
-Reports a list of turtles following the shortest path from the calling
-turtle to the destination turtle.  The calling turtle and the
-destination are included in the list.
+example: `ask banker1 [ show network:path-links banker3 friendships ]`
+->   [(link 1 2) (link 2 3)]
+
+Reports a list of turtles or links following the shortest path from the calling
+turtle to the destination turtle.
 
 Reports an empty list if no path exists.
+
+If `network:path-turtles` is used, the calling turtle and the
+destination are included in the list.
 
 Searches breadth-first from the calling turtle,
 following links of the given link breed.
@@ -73,13 +78,6 @@ following links of the given link breed.
 Follows links at the same depth in random order.  If there are
 multiple shortest paths, a different path may be returned on
 subsequent calls, depending on the random choices made during search.
-
-### network:path-links
-
-![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-links TURTLE LINK-BREED`
-
-example: `ask banker1 [ show network:path-links banker3 friendships ]`
-->   [(link 1 2) (link 2 3)]
 
 ### network:mean-path-length
 
@@ -89,7 +87,7 @@ Reports the average shortest-path length between all distinct pairs of
 nodes in the given set of turtles, following links of the given link
 breed.
 
-Reports -1 if the turtles are not fully connected.
+Reports false if the turtles are not fully connected.
 
 ## Transition guide
 

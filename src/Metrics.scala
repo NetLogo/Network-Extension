@@ -41,11 +41,10 @@ object Metrics {
       .flatten
   }
     
-  def linkDistance(start: Turtle, end: Turtle, links: AgentSet): Int =
+  def linkDistance(start: Turtle, end: Turtle, links: AgentSet): Option[Int] =
     breadthFirstSearch(start, links)
       .find(_.head eq end)
       .map(_.size - 1)
-      .getOrElse(-1)
 
   def extendedLinkNeighbors(start: Turtle, radius: Double, links: AgentSet): AgentSet = {
     val resultArray =
@@ -73,8 +72,8 @@ object Metrics {
       .getOrElse(LogoList.Empty)
   }
 
-  def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Double =
-    0
+  def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Option[Double] =
+    None
 /*
     var linkManager: LinkManager = null
     val seen = collection.mutable.HashSet[Turtle]()

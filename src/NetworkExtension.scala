@@ -57,17 +57,19 @@ object LinkDistance extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtleType, Syntax.LinksetType),
-      Syntax.NumberType, "-T--")
-  override def report(args: Array[Argument], context: Context) = {
+      Syntax.NumberType | Syntax.BooleanType, "-T--")
+  override def report(args: Array[Argument], context: Context): AnyRef = {
     val destNode = args(0).getTurtle
     val linkBreed = args(1).getAgentSet
     requireLinkBreed(context, linkBreed)
     requireAlive(destNode)
-    java.lang.Double.valueOf(
+    val result =
       Metrics.linkDistance(
         context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
         destNode.asInstanceOf[org.nlogo.agent.Turtle],
-        linkBreed.asInstanceOf[org.nlogo.agent.AgentSet]))
+        linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
+    result.map(java.lang.Double.valueOf(_))
+      .getOrElse(java.lang.Boolean.FALSE)
   }
 }
 
@@ -75,15 +77,18 @@ object MeanPathLength extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtlesetType, Syntax.LinksetType),
-      Syntax.NumberType)
-  override def report(args: Array[Argument], context: Context) = {
+      Syntax.NumberType | Syntax.BooleanType)
+  override def report(args: Array[Argument], context: Context): AnyRef = {
     val nodeSet = args(0).getAgentSet
     val linkBreed = args(1).getAgentSet
     requireTurtleset(nodeSet)
     requireLinkBreed(context, linkBreed)
-    java.lang.Double.valueOf(
-      Metrics.meanPathLength(nodeSet.asInstanceOf[org.nlogo.agent.AgentSet],
-                             linkBreed.asInstanceOf[org.nlogo.agent.AgentSet]))
+    val result =
+      Metrics.meanPathLength(
+        nodeSet.asInstanceOf[org.nlogo.agent.AgentSet],
+        linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
+    result.map(java.lang.Double.valueOf(_))
+      .getOrElse(java.lang.Boolean.FALSE)
   }
 }
 
