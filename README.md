@@ -15,18 +15,24 @@ definitely:
 
 maybe:
 
+* more test cases for directed links
 * always use named arguments when constructing Syntax objects?
 * move ArgumentTypeException to api package?
 * rename `type` so backticks aren't needed?
 * write tests verifying that directed links aren't followed in the wrong direction
 
-## Description of primitives in src directory
+## Notes
 
 Anywhere a link breed is required, `links` is also accepted.
 
+Path lengths are computed based solely on the number of hops.  There
+isn't currently any way to specify a "weight" or "distance" variable
+for links.
+
+## Primitives
+
 ### network:in-link-radius
 
-syntax:  
 ![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `TURTLESET network:in-link-radius RADIUS LINK-BREED`
 
 example: `ask one-of bankers [ show other bankers in-network-radius 5 friendships ]`
@@ -38,7 +44,6 @@ following links of the given link breed.
 
 ### network:link-distance
 
-syntax:  
 ![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:link-distance TURTLE LINK-BREED`
 
 example: `ask one-of-bankers [ show network:link-distance the-best-banker friendships ]`
@@ -51,7 +56,6 @@ Reports -1 if no path exists.
 
 ### network:path-turtles
 
-syntax:  
 ![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-turtles TURTLE LINK-BREED`
 
 example: `ask banker1 [ show network:path-turtles banker3 friendships ]`
@@ -72,7 +76,6 @@ subsequent calls, depending on the random choices made during search.
 
 ### network:path-links
 
-syntax:  
 ![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-links TURTLE LINK-BREED`
 
 example: `ask banker1 [ show network:path-links banker3 friendships ]`
@@ -80,24 +83,13 @@ example: `ask banker1 [ show network:path-links banker3 friendships ]`
 
 ### network:mean-path-length
 
+`network:mean-path-length TURTLE-SET LINK-BREED`
+
 Reports the average shortest-path length between all distinct pairs of
 nodes in the given set of turtles, following links of the given link
 breed.
 
 Reports -1 if the turtles are not fully connected.
-
-### Notes
-
-Although these reporters were intended to support both directed and
-undirected networks, I'm not positive that they do in all cases.  More
-test cases are needed.
-
-It is an open question how `network:link-distance` should handle
-distances between two nodes that are not reachable via the network.
-
-Path lengths are computed based solely on the number of hops.  There
-isn't currently any way to specify a "weight" or "distance" variable
-for links.
 
 ## Transition guide
 
