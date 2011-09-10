@@ -5,6 +5,7 @@ It requires NetLogo 5.0beta5, which isn't out yet.
 ## TODO
 
 definitely:
+
 * change `extended-link-neighbors` back to `in-link-radius` and take a sourceSet input
 * keep -1 as sentinel value, or use false instead?
 * split in-link-radius into in-, in-in-, in-out-
@@ -13,6 +14,7 @@ definitely:
   that all have "link" in them?)
 
 maybe:
+
 * always use named arguments when constructing Syntax objects?
 * move ArgumentTypeException to api package?
 * rename `type` so backticks aren't needed?
