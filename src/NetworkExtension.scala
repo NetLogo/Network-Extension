@@ -6,11 +6,11 @@ import org.nlogo.api.{
 
 class NetworkExtension extends DefaultClassManager {
   override def load(primManager: PrimitiveManager) {
-    primManager.addPrimitive("link-distance", new LinkDistance)
-    primManager.addPrimitive("extended-link-neighbors", new ExtendedLinkNeighbors)
-    primManager.addPrimitive("mean-path-length", new MeanPathLength)
-    primManager.addPrimitive("path-turtles", new PathTurtles)
-    primManager.addPrimitive("path-links", new PathLinks)
+    primManager.addPrimitive("link-distance", LinkDistance)
+    primManager.addPrimitive("extended-link-neighbors", ExtendedLinkNeighbors)
+    primManager.addPrimitive("mean-path-length", MeanPathLength)
+    primManager.addPrimitive("path-turtles", PathTurtles)
+    primManager.addPrimitive("path-links", PathLinks)
   }
 }
 
@@ -36,7 +36,7 @@ trait Helpers {
 
 /// primitives
 
-class ExtendedLinkNeighbors extends DefaultReporter with Helpers {
+object ExtendedLinkNeighbors extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.NumberType, Syntax.LinksetType),
@@ -53,7 +53,7 @@ class ExtendedLinkNeighbors extends DefaultReporter with Helpers {
   }
 }
 
-class LinkDistance extends DefaultReporter with Helpers {
+object LinkDistance extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtleType, Syntax.LinksetType),
@@ -71,7 +71,7 @@ class LinkDistance extends DefaultReporter with Helpers {
   }
 }
 
-class MeanPathLength extends DefaultReporter with Helpers {
+object MeanPathLength extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtlesetType, Syntax.LinksetType),
@@ -87,7 +87,7 @@ class MeanPathLength extends DefaultReporter with Helpers {
   }
 }
 
-class PathTurtles extends DefaultReporter with Helpers {
+object PathTurtles extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtleType, Syntax.LinksetType),
@@ -104,7 +104,7 @@ class PathTurtles extends DefaultReporter with Helpers {
   }
 }
 
-class PathLinks extends DefaultReporter with Helpers {
+object PathLinks extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtleType, Syntax.LinksetType),
