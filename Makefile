@@ -16,6 +16,6 @@ network.jar: $(SRCS) manifest.txt Makefile
 network.zip: network.jar
 	rm -rf network
 	mkdir network
-	cp -rp network.jar README.md Makefile src more docs manifest.txt tests.txt network
+	cp -rp network.jar README.md Makefile src manifest.txt tests.txt network
 	zip -rv network.zip network
 	rm -rf network
