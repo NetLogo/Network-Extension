@@ -1,8 +1,0 @@
-MagSpring_2D
-  OPEN> test/models/Preferential Attachment Tester.nlogo
-  to mag-layout repeat 3 [ __layout-magspring turtles links 0.5 1.0 0.4 0.4 0 false ] end
-  O> random-seed 2342
-  O> setup
-  O> repeat 50 [ go ]
-  O> repeat 5000 [ mag-layout ]
-  any? links with [ any? other links with [ bad-intersections self myself ] ] => false

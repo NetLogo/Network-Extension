@@ -92,24 +92,29 @@ lengths are computed based solely on the number of hops, and there
 currently isn't any way to specify a "weight/distance" variable for
 the links.
 
-## Description of primitives in src-more directory
+## Transition guide
 
-These primitives are written in the style used by built-in NetLogo primitives. To be brought back to life, they'd need to be changed to use the extensions API instead.
+### Renamed primitives
 
-###__create-network-preferential
+The primitives in this extension were present in NetLogo 4.1, but with different names.
+They were renamed as follows:
 
-syntax:  __create-network-preferential TURTLESET LINK-BREED AVG-DEGREE
+* `__network-distance` to `network:link-distance`
+* `__in-network-radius` to `network:extended-link-neighbors`
+* `__average-path-length` to `network:mean-path-length`
+* `__network-shortest-path-turtles` to `network:path-turtles`
+* `__network-shortest-path-links` to `network:path-links`
 
-example:  __create-network-preferential bankers friendships 3
- (note that you should create the banker turtles ahead of time - this
-primitive just creates a BA preferential attachment model network
-between the turtles you specify.
+### Omitted primitives
 
-### __layout-magspring
+The following primitives, present in NetLogo 4.1 but not NetLogo 5.0, are not included in this extension either:
 
-### __layout-quick
+* `__create-network-preferential`, 
+* `__layout-magspring`
+* `__layout-quick`
+* `__layout-sphere`.
 
-### __layout-sphere
+For the source code for these primitives, see <insert url here>.  But note they are written in the style used by built-in NetLogo primitives. To be brought back to life, they'd need to be changed to use the extensions API instead.
 
 ## Credits
 
