@@ -18,7 +18,7 @@ maybe:
 * rename `type` so backticks aren't needed?
 * write tests verifying that directed links aren't followed in the wrong direction
 
-## Description of primitives in src directory
+## Primitives
 
 Anywhere a link breed is required, `links` is also accepted.
 
@@ -35,7 +35,7 @@ following links of the given link breed.
 
 ### network:link-distance
 
-syntax: `network:link-distance TURTLE LINK-BREED`
+syntax: ![turtle](turtle.gif) `network:link-distance TURTLE LINK-BREED`
 
 example: `ask one-of-bankers [ show network:link-distance the-best-banker friendships ]`
 
