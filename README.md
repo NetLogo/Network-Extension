@@ -87,7 +87,7 @@ Reports the average shortest-path length between all distinct pairs of
 nodes in the given set of turtles, following links of the given link
 breed.
 
-Reports false if the turtles are not fully connected.
+Reports false unless paths exist between all pairs.
 
 ## Transition guide
 
