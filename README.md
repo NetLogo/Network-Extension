@@ -1,53 +1,87 @@
-## THIS CODE CAN'T CURRENTLY BE BUILT OR RUN.
+## THIS CODE CAN'T CURRENTLY BE BUILT OR RUN (EXCEPT AT NORTHWESTERN)
 
-It needs a volunteer to convert it into a working extension.  The primitives are currently written in the style used by built-in NetLogo primitives, and need to be changed to use the extensions API instead.  Want to tackle it?
+It requires NetLogo 5.0beta5, which isn't out yet.
+
+## TODO
+
+* move primitive descriptions out of code and into README.md
+* always use named arguments when constructing Syntax objects?
+* move ArgumentTypeException to api package?
+* rename `type` so backticks aren't needed?
+* "links in the prim names" ought to be replaceable with a breed name.
+  (even if we don't do that now, I guess we ought to give the prim names
+  that all have "link" in them?)
+* keep -1 as sentinel value, or use false instead?
+* split in-link-radius into in-, in-in-, in-out-
+* I got rid of the sourceSet arg to in-link-radius, is that OK?
+  hmm, no, Forrest disagrees, and he convinced me.
+* should the extended neighborhoods include the turtle itself?
+* return paths in forward order or reverse order?
+* write tests verifying that directed links aren't followed in the wrong direction
 
 ## Description of primitives in src directory
 
-__in-network-radius
-syntax:  TURTLESET __in-network-radius RADIUS LINKSET
-example:  ask one-of bankers [ show other bankers __in-network-radius
-5 friendships ]
+### network:in-link-radius
 
-__network-distance
-syntax: __network-distance TURTLE LINK-SET
-example:  ask one-of-bankers [ show __network-distance the-best-banker
-friendships ]
+syntax: `TURTLESET network:in-link-radius RADIUS LINKSET`
 
-__network-shortest-path-links
-syntax:  __network-shortest-path-links TURTLE LINK-SET
-example: ask banker1 [ show __network-shortest-path-links banker2 friendships ]
-->   [(link 2 3) (link 3 1)]  ; e.g. a list of the links along the
-shortest path between.
+example: `ask one-of bankers [ show other bankers in-network-radius 5 friendships ]`
 
-__network-shortest-path-nodes
-syntax: __network-shortest-path-nodes TURTLE LINK-SET
-example: ask banker1 [ show __network-shortest-path-nodes banker2 friendships ]
-->   [(banker 1) (banker 3) (banker 2)]  ; e.g. a list of the nodes
-along the shortest path between.
+### network:link-distance
+
+syntax: `network:link-distance TURTLE LINK-SET`
+
+example: `ask one-of-bankers [ show network:link-distance the-best-banker friendships ]`
+
+### network:path-turtles
+
+syntax: `network:path-turtles TURTLE LINK-SET`
+
+example: `ask banker1 [ show network:path-turtles banker3 friendships ]`
+->   [(banker 1) (banker 2) (banker 3)]
  
-Note that it is somewhat of an open question how the __network-distance primitive should handle distances between two nodes that are not reachable via the network.  Also, although these reporters were intended to support both directed and undirected networks, I'm not positive that they do in all cases.  Also, path lengths are computed based solely on the number of hops, and there currently isn't any way to specify a "weight/distance" variable for the links.
+### network:path-links
 
-__average-path-length
+syntax: `network:path-links TURTLE LINK-SET`
+
+example: `ask banker1 [ show network:path-links banker3 friendships ]`
+->   [(link 1 2) (link 2 3)]
+
+### __average-path-length
+
+### Notes
+
+Note that it is somewhat of an open question how 
+`network:link-distance` should handle distances between two nodes
+that are not reachable via the network.  Also, although these
+reporters were intended to support both directed and undirected
+networks, I'm not positive that they do in all cases.  Also, path
+lengths are computed based solely on the number of hops, and there
+currently isn't any way to specify a "weight/distance" variable for
+the links.
 
 ## Description of primitives in src-more directory
 
-__create-network-preferential
+These primitives are written in the style used by built-in NetLogo primitives. To be brought back to life, they'd need to be changed to use the extensions API instead.
+
+###__create-network-preferential
+
 syntax:  __create-network-preferential TURTLESET LINK-BREED AVG-DEGREE
+
 example:  __create-network-preferential bankers friendships 3
  (note that you should create the banker turtles ahead of time - this
 primitive just creates a BA preferential attachment model network
 between the turtles you specify.
 
-__layout-magspring
+### __layout-magspring
 
-__layout-quick
+### __layout-quick
 
-__layout-sphere
+### __layout-sphere
 
 ## Credits
 
-This code was originally written by Forrest Stonedahl.
+The first versions of these primitives were written by Forrest Stonedahl.
 
 ## Terms of Use
 
