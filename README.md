@@ -24,7 +24,8 @@ Anywhere a link breed is required, `links` is also accepted.
 
 ### network:in-link-radius
 
-syntax: `TURTLESET network:in-link-radius RADIUS LINK-BREED`
+syntax:  
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `TURTLESET network:in-link-radius RADIUS LINK-BREED`
 
 example: `ask one-of bankers [ show other bankers in-network-radius 5 friendships ]`
 
@@ -35,7 +36,8 @@ following links of the given link breed.
 
 ### network:link-distance
 
-syntax: `network:link-distance TURTLE LINK-BREED`
+syntax:  
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:link-distance TURTLE LINK-BREED`
 
 example: `ask one-of-bankers [ show network:link-distance the-best-banker friendships ]`
 
@@ -47,7 +49,8 @@ Reports -1 if no path exists.
 
 ### network:path-turtles
 
-syntax: `network:path-turtles TURTLE LINK-BREED`
+syntax:  
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-turtles TURTLE LINK-BREED`
 
 example: `ask banker1 [ show network:path-turtles banker3 friendships ]`
 ->   [(banker 1) (banker 2) (banker 3)]
@@ -67,7 +70,8 @@ subsequent calls, depending on the random choices made during search.
 
 ### network:path-links
 
-syntax: `network:path-links TURTLE LINK-BREED`
+syntax:  
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-links TURTLE LINK-BREED`
 
 example: `ask banker1 [ show network:path-links banker3 friendships ]`
 ->   [(link 1 2) (link 2 3)]
