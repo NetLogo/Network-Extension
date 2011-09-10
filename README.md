@@ -114,7 +114,7 @@ The following primitives, present in NetLogo 4.1 but not NetLogo 5.0, are not in
 * `__layout-quick`
 * `__layout-sphere`.
 
-For the source code for these primitives, see <insert url here>.  But note they are written in the style used by built-in NetLogo primitives. To be brought back to life, they'd need to be changed to use the extensions API instead.
+For the source code for these primitives, see [this commit](https://github.com/NetLogo/Network-Extension/commit/eea275e20b5c2a76fc76b8b7642d2a5e7df0a1e4).  But note they are written in the style used by built-in NetLogo primitives. To be brought back to life, they'd need to be changed to use the extensions API instead.
 
 ## Credits
 
