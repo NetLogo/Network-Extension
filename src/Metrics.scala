@@ -16,17 +16,21 @@ object Metrics {
   // all of the primitives use this to traverse the network in breadth-first order.
   // each List[Turtle] is a reversed path (destination is head); the paths share
   // storage, so total memory usage stays within O(n).
-  private def breadthFirstSearch(start: Turtle, links: AgentSet): Stream[List[Turtle]] = {
+  private def breadthFirstSearch(start: Turtle, links: AgentSet, reverse: Boolean = false): Stream[List[Turtle]] = {
     val seen: Turtle => Boolean = {
       val memory = collection.mutable.HashSet[Turtle](start)
       t => memory(t) || { memory += t; false }
     }
     val neighborFinder: Turtle => AgentSet = {
       val linkManager = start.world.linkManager
-      if (links.isDirected)
-        linkManager.findLinkedFrom(_, links)
-      else
-        linkManager.findLinkedWith(_, links)
+      (links.isDirected, reverse) match {
+        case (false, _) =>
+          linkManager.findLinkedWith(_, links)
+        case (true, false) =>
+          linkManager.findLinkedFrom(_, links)
+        case (true, true) =>
+          linkManager.findLinkedTo(_, links)
+      }
     }
     def neighbors(node: Turtle): Iterator[Turtle] =
       asScala(neighborFinder(node).iterator)
@@ -46,9 +50,9 @@ object Metrics {
       .find(_.head eq end)
       .map(_.size - 1)
 
-  def inLinkRadius(sourceSet: AgentSet, start: Turtle, radius: Double, links: AgentSet): AgentSet = {
+  def inLinkRadius(sourceSet: AgentSet, start: Turtle, radius: Double, links: AgentSet, reverse: Boolean = false): AgentSet = {
     val resultArray =
-      breadthFirstSearch(start, links)
+      breadthFirstSearch(start, links, reverse)
         .takeWhile(_.tail.size <= radius)
         .map(_.head)
         .filter(sourceSet.contains)

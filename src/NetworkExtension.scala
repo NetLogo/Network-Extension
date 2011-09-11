@@ -7,6 +7,8 @@ import org.nlogo.api.{
 class NetworkExtension extends DefaultClassManager {
   override def load(primManager: PrimitiveManager) {
     primManager.addPrimitive("in-link-radius", InLinkRadius)
+    primManager.addPrimitive("in-out-link-radius", InOutLinkRadius)
+    primManager.addPrimitive("in-in-link-radius", InInLinkRadius)
     primManager.addPrimitive("link-distance", LinkDistance)
     primManager.addPrimitive("mean-path-length", MeanPathLength)
     primManager.addPrimitive("path-turtles", PathTurtles)
@@ -15,12 +17,21 @@ class NetworkExtension extends DefaultClassManager {
 }
 
 trait Helpers {
+  val radiusSyntax =
+    Syntax.reporterSyntax(
+      left = Syntax.AgentsetType,
+      right = Array(Syntax.NumberType, Syntax.LinksetType),
+      ret = Syntax.TurtlesetType,
+      isRightAssociative = false,
+      precedence = Syntax.NormalPrecedence + 2, // same as in-radius
+      agentClassString = "-T--",
+      blockAgentClassString = null)
   def requireTurtleset(agents: AgentSet) {
     if(!classOf[Turtle].isAssignableFrom(agents.`type`))
       throw new ExtensionException(
         "Expected input to be a turtleset")
   }
-  def requireLinkBreed(context: Context, agents: AgentSet) {
+  def requireLinkBreed(context: Context, agents: AgentSet, allowDirected: Boolean = true, allowUndirected: Boolean = true) {
     val world = context.getAgent.world
     if ((agents ne world.links) &&
         !world.asInstanceOf[org.nlogo.agent.World].isLinkBreed(agents.asInstanceOf[org.nlogo.agent.AgentSet]))
@@ -37,15 +48,7 @@ trait Helpers {
 /// primitives
 
 object InLinkRadius extends DefaultReporter with Helpers {
-  override def getSyntax =
-    Syntax.reporterSyntax(
-      left = Syntax.AgentsetType,
-      right = Array(Syntax.NumberType, Syntax.LinksetType),
-      ret = Syntax.TurtlesetType,
-      isRightAssociative = false,
-      precedence = Syntax.NormalPrecedence + 2, // same as in-radius
-      agentClassString = "-T--",
-      blockAgentClassString = null)
+  override def getSyntax = radiusSyntax
   override def report(args: Array[Argument], context: Context) = {
     val sourceSet = args(0).getAgentSet
     val radius = args(1).getDoubleValue
@@ -53,11 +56,46 @@ object InLinkRadius extends DefaultReporter with Helpers {
     requireTurtleset(sourceSet)
     if (radius < 0)
       throw new ExtensionException("radius cannot be negative")
-    requireLinkBreed(context, linkBreed)
+    requireLinkBreed(context, linkBreed, allowDirected = false)
     Metrics.inLinkRadius(
       sourceSet.asInstanceOf[org.nlogo.agent.AgentSet],
       context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
       radius, linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
+  }
+}
+
+object InOutLinkRadius extends DefaultReporter with Helpers {
+  override def getSyntax = radiusSyntax
+  override def report(args: Array[Argument], context: Context) = {
+    val sourceSet = args(0).getAgentSet
+    val radius = args(1).getDoubleValue
+    val linkBreed = args(2).getAgentSet
+    requireTurtleset(sourceSet)
+    if (radius < 0)
+      throw new ExtensionException("radius cannot be negative")
+    requireLinkBreed(context, linkBreed, allowUndirected = false)
+    Metrics.inLinkRadius(
+      sourceSet.asInstanceOf[org.nlogo.agent.AgentSet],
+      context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
+      radius, linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
+  }
+}
+
+object InInLinkRadius extends DefaultReporter with Helpers {
+  override def getSyntax = radiusSyntax
+  override def report(args: Array[Argument], context: Context) = {
+    val sourceSet = args(0).getAgentSet
+    val radius = args(1).getDoubleValue
+    val linkBreed = args(2).getAgentSet
+    requireTurtleset(sourceSet)
+    if (radius < 0)
+      throw new ExtensionException("radius cannot be negative")
+    requireLinkBreed(context, linkBreed, allowUndirected = false)
+    Metrics.inLinkRadius(
+      sourceSet.asInstanceOf[org.nlogo.agent.AgentSet],
+      context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
+      radius, linkBreed.asInstanceOf[org.nlogo.agent.AgentSet],
+      reverse = true)
   }
 }
 

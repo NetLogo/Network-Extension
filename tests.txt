@@ -28,6 +28,22 @@ in-link-radius-source-set-filtering
   O> set glob1 turtles with [who mod 2 = 0]
   sort [who] of [glob1 network:in-link-radius 10 links] of turtle 0 => [0 2 4 6]
 
+### in-out-link-radius, in-in-link-radius
+
+in-out-link-radius
+  extensions [network]
+  O> crt 2
+  O> ask turtle 0 [ create-link-to turtle 1 ]
+  sort [who] of [turtles network:in-out-link-radius 1 links] of turtle 0 => [0 1]
+  sort [who] of [turtles network:in-out-link-radius 1 links] of turtle 1 => [1]
+
+in-in-link-radius
+  extensions [network]
+  O> crt 2
+  O> ask turtle 0 [ create-link-to turtle 1 ]
+  sort [who] of [turtles network:in-in-link-radius 1 links] of turtle 0 => [0]
+  sort [who] of [turtles network:in-in-link-radius 1 links] of turtle 1 => [0 1]
+
 ### link-distance
 
 distance-to-self

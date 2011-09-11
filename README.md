@@ -4,7 +4,6 @@ It requires NetLogo 5.0beta5, which isn't out yet.
 
 ## TO DO
 
-* split in-link-radius into in-, in-in-, in-out-
 * "links in the prim names" ought to be replaceable with a breed name.
   (even if we don't do that now, I guess we ought to give the prim names
   that all have "link" in them? do we need link-path-links [or just
@@ -22,9 +21,11 @@ for links.
 
 ## Primitives
 
-### network:in-link-radius
+### network:in-link-radius, network:in-out-link-radius, network:in-in-link-radius
 
-![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `TURTLESET network:in-link-radius RADIUS LINK-BREED`
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `TURTLESET network:in-link-radius RADIUS LINK-BREED`  
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `TURTLESET network:in-out-link-radius RADIUS LINK-BREED`  
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `TURTLESET network:in-in-link-radius RADIUS LINK-BREED`
 
 example: `ask one-of bankers [ show other bankers in-network-radius 5 friendships ]`
 
@@ -32,6 +33,10 @@ Returns the set of turtles within the given distance (number of links followed)
 of the calling turtle.
 Searches breadth-first from the calling turtle,
 following links of the given link breed.
+
+The `in-link-radius` form works with undirected links.  The other two
+forms work with directed links; `out` or `in` specifies whether links
+are followed in the normal direction (`out`), or in reverse (`in`).
 
 ### network:link-distance
 
