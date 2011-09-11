@@ -181,6 +181,14 @@ mean-path-length-on-a-pentagon
   O> crt 5 [ create-link-with turtle ((who + 1) mod 5) ]
   network:mean-path-length turtles links => 1.5
 
+mean-path-length-pairs-of-turtles-on-a-pentagon
+  extensions [network]
+  O> crt 5 [ create-link-with turtle ((who + 1) mod 5) ]
+  network:mean-path-length (turtle-set turtle 0 turtle 1) links => 1
+  network:mean-path-length (turtle-set turtle 1 turtle 0) links => 1
+  network:mean-path-length (turtle-set turtle 0 turtle 2) links => 2
+  network:mean-path-length (turtle-set turtle 2 turtle 0) links => 2
+
 ## directed links
 
 mean-path-length-directed-two-half-connected-turtles

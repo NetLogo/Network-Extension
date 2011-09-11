@@ -4,23 +4,12 @@ It requires NetLogo 5.0beta5, which isn't out yet.
 
 ## TO DO
 
-definitely:
-
-* finish `mean-path-length`
-* should `mean-path-length` require undirected links? (ask Forrest?)
 * change `extended-link-neighbors` back to `in-link-radius` and take a sourceSet input
 * split in-link-radius into in-, in-in-, in-out-
 * "links in the prim names" ought to be replaceable with a breed name.
   (even if we don't do that now, I guess we ought to give the prim names
-  that all have "link" in them?)
-
-maybe:
-
-* more test cases for directed links
-* always use named arguments when constructing Syntax objects?
-* move ArgumentTypeException to api package?
-* rename `type` so backticks aren't needed?
-* write tests verifying that directed links aren't followed in the wrong direction
+  that all have "link" in them? do we need link-path-links [or just
+  link-path?], link-path-turtles, mean-link-path-length?)
 
 ## Notes
 

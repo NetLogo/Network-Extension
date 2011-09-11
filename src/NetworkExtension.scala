@@ -40,7 +40,8 @@ object ExtendedLinkNeighbors extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.NumberType, Syntax.LinksetType),
-      Syntax.TurtlesetType, agentClassString = "-T--")
+      Syntax.TurtlesetType,
+      agentClassString = "-T--")
   override def report(args: Array[Argument], context: Context) = {
     val radius = args(0).getDoubleValue
     val linkBreed = args(1).getAgentSet
@@ -57,7 +58,8 @@ object LinkDistance extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtleType, Syntax.LinksetType),
-      Syntax.NumberType | Syntax.BooleanType, "-T--")
+      Syntax.NumberType | Syntax.BooleanType,
+      agentClassString = "-T--")
   override def report(args: Array[Argument], context: Context): AnyRef = {
     val destNode = args(0).getTurtle
     val linkBreed = args(1).getAgentSet
@@ -96,7 +98,8 @@ object PathTurtles extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtleType, Syntax.LinksetType),
-      Syntax.ListType, "-T--")
+      Syntax.ListType,
+      agentClassString = "-T--")
   override def report(args: Array[Argument], context: Context) = {
     val destNode = args(0).getTurtle
     val linkBreed = args(1).getAgentSet
@@ -113,7 +116,8 @@ object PathLinks extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtleType, Syntax.LinksetType),
-      Syntax.ListType, "-T--")
+      Syntax.ListType,
+      agentClassString = "-T--")
   override def report(args: Array[Argument], context: Context) = {
     val destNode = args(0).getTurtle
     val linkBreed = args(1).getAgentSet
