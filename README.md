@@ -1,13 +1,19 @@
-## THIS CODE CAN'T CURRENTLY BE BUILT OR RUN (EXCEPT AT NORTHWESTERN)
+# THIS CODE CAN'T CURRENTLY BE BUILT OR RUN (EXCEPT AT NORTHWESTERN)
 
 It requires NetLogo 5.0beta5, which isn't out yet.
 
-## TO DO
+# NetLogo network extension
 
-* have Forrest review the design and the code
-* get README in final shape for release
+This package contains the NetLogo network extension.
 
-## Notes
+This extension is experimental.  Although it is presently bundled with NetLogo, it should not be considered a standard part of the application.
+
+The source code for the extension is hosted online at
+https://github.com/NetLogo/Network-Extension
+
+## Using
+
+This extension is pre-installed in NetLogo. (For help with extensions in general, see the NetLogo User Manual.)
 
 Anywhere a link breed is required, `links` is also accepted.
 
@@ -111,6 +117,14 @@ The following primitives, present in NetLogo 4.1 but not NetLogo 5.0, are not in
 * `__layout-sphere`
 
 For the source code for these primitives, see [this commit](https://github.com/NetLogo/Network-Extension/commit/eea275e20b5c2a76fc76b8b7642d2a5e7df0a1e4).  But note they are written in the style used by built-in NetLogo primitives. To be brought back to life, they'd need to be changed to use the extensions API instead.
+
+## Building
+
+Use the NETLOGO environment variable to tell the Makefile which NetLogo.jar to compile against.  For example:
+
+    NETLOGO=/Applications/NetLogo\\\ 5.0 make
+
+If compilation succeeds, `network.jar` will be created.
 
 ## Credits
 
