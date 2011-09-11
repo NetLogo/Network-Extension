@@ -1,3 +1,33 @@
+### in-link-radius
+
+in-link-radius-negative-radius
+  extensions [network]
+  O> crt 1
+  [turtles network:in-link-radius -1 links] of turtle 0 => ERROR Extension exception: radius cannot be negative
+
+in-link-radius-zero-radius
+  extensions [network]
+  O> crt 5
+  remove-duplicates [count turtles network:in-link-radius 0 links] of turtles => [1]
+
+in-link-radius-two-circles
+  extensions [network]
+  O> crt 8 [ create-link-with turtle ((who + 1) mod 8) ]
+  O> crt 8 [ create-link-with turtle ((who - 8 + 1) mod 8 + 8) ]
+  remove-duplicates [count turtles network:in-link-radius 0 links] of turtles => [1]
+  remove-duplicates [count turtles network:in-link-radius 1 links] of turtles => [3]
+  remove-duplicates [count turtles network:in-link-radius 2 links] of turtles => [5]
+  remove-duplicates [count turtles network:in-link-radius 3 links] of turtles => [7]
+  remove-duplicates [count turtles network:in-link-radius 4 links] of turtles => [8]
+  remove-duplicates [count turtles network:in-link-radius 5 links] of turtles => [8]
+  remove-duplicates [count turtles network:in-link-radius 1E38 links] of turtles => [8]
+
+in-link-radius-source-set-filtering
+  extensions [network]
+  O> crt 8 [ create-links-with other turtles ]
+  O> set glob1 turtles with [who mod 2 = 0]
+  sort [who] of [glob1 network:in-link-radius 10 links] of turtle 0 => [0 2 4 6]
+
 ### link-distance
 
 distance-to-self
@@ -50,30 +80,6 @@ distance-around-two-circles
   sort [network:link-distance turtle 8 links] of turtles with [who >= 8] => [0 1 1 2 2 3 3 4]
   remove-duplicates [network:link-distance turtle 8 links] of turtles with [who < 8] => [false]
   remove-duplicates [network:link-distance turtle 0 links] of turtles with [who >= 8] => [false]
-
-### extended-link-neighbors
-
-neighbordhood-negative-radius
-  extensions [network]
-  O> crt 1
-  [network:extended-link-neighbors -1 links] of turtle 0 => ERROR Extension exception: radius cannot be negative
-
-neighborhood-zero-radius
-  extensions [network]
-  O> crt 5
-  remove-duplicates [count network:extended-link-neighbors 0 links] of turtles => [1]
-
-neighborhood-two-circles
-  extensions [network]
-  O> crt 8 [ create-link-with turtle ((who + 1) mod 8) ]
-  O> crt 8 [ create-link-with turtle ((who - 8 + 1) mod 8 + 8) ]
-  remove-duplicates [count network:extended-link-neighbors 0 links] of turtles => [1]
-  remove-duplicates [count network:extended-link-neighbors 1 links] of turtles => [3]
-  remove-duplicates [count network:extended-link-neighbors 2 links] of turtles => [5]
-  remove-duplicates [count network:extended-link-neighbors 3 links] of turtles => [7]
-  remove-duplicates [count network:extended-link-neighbors 4 links] of turtles => [8]
-  remove-duplicates [count network:extended-link-neighbors 5 links] of turtles => [8]
-  remove-duplicates [count network:extended-link-neighbors 1E38 links] of turtles => [8]
 
 ### path-turtles
 

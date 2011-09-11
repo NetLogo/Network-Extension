@@ -46,11 +46,12 @@ object Metrics {
       .find(_.head eq end)
       .map(_.size - 1)
 
-  def extendedLinkNeighbors(start: Turtle, radius: Double, links: AgentSet): AgentSet = {
+  def inLinkRadius(sourceSet: AgentSet, start: Turtle, radius: Double, links: AgentSet): AgentSet = {
     val resultArray =
       breadthFirstSearch(start, links)
         .takeWhile(_.tail.size <= radius)
         .map(_.head)
+        .filter(sourceSet.contains)
         .toArray[Agent]
     new ArrayAgentSet(classOf[Turtle], resultArray, start.world)
   }

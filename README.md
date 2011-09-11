@@ -4,12 +4,13 @@ It requires NetLogo 5.0beta5, which isn't out yet.
 
 ## TO DO
 
-* change `extended-link-neighbors` back to `in-link-radius` and take a sourceSet input
 * split in-link-radius into in-, in-in-, in-out-
 * "links in the prim names" ought to be replaceable with a breed name.
   (even if we don't do that now, I guess we ought to give the prim names
   that all have "link" in them? do we need link-path-links [or just
   link-path?], link-path-turtles, mean-link-path-length?)
+* have Forrest review the design and the code
+* get README in final shape for release
 
 ## Notes
 
@@ -88,7 +89,7 @@ The primitives in this extension were present in NetLogo 4.1, but with different
 They were renamed as follows:
 
 * `__network-distance` to `network:link-distance`
-* `__in-network-radius` to `network:extended-link-neighbors`
+* `__in-network-radius` to `network:in-link-radius`
 * `__average-path-length` to `network:mean-path-length`
 * `__network-shortest-path-turtles` to `network:path-turtles`
 * `__network-shortest-path-links` to `network:path-links`
