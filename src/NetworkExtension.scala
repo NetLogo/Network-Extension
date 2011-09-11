@@ -10,9 +10,9 @@ class NetworkExtension extends DefaultClassManager {
     primManager.addPrimitive("in-out-link-radius", InOutLinkRadius)
     primManager.addPrimitive("in-in-link-radius", InInLinkRadius)
     primManager.addPrimitive("link-distance", LinkDistance)
-    primManager.addPrimitive("mean-path-length", MeanPathLength)
-    primManager.addPrimitive("path-turtles", PathTurtles)
-    primManager.addPrimitive("path-links", PathLinks)
+    primManager.addPrimitive("mean-link-path-length", MeanLinkPathLength)
+    primManager.addPrimitive("link-path", LinkPath)
+    primManager.addPrimitive("link-path-turtles", LinkPathTurtles)
   }
 }
 
@@ -120,7 +120,7 @@ object LinkDistance extends DefaultReporter with Helpers {
   }
 }
 
-object MeanPathLength extends DefaultReporter with Helpers {
+object MeanLinkPathLength extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtlesetType, Syntax.LinksetType),
@@ -131,7 +131,7 @@ object MeanPathLength extends DefaultReporter with Helpers {
     requireTurtleset(nodeSet)
     requireLinkBreed(context, linkBreed)
     val result =
-      Metrics.meanPathLength(
+      Metrics.meanLinkPathLength(
         nodeSet.asInstanceOf[org.nlogo.agent.AgentSet],
         linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
     result.map(Double.box(_))
@@ -139,7 +139,7 @@ object MeanPathLength extends DefaultReporter with Helpers {
   }
 }
 
-object PathTurtles extends DefaultReporter with Helpers {
+object LinkPath extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtleType, Syntax.LinksetType),
@@ -150,14 +150,14 @@ object PathTurtles extends DefaultReporter with Helpers {
     val linkBreed = args(1).getAgentSet
     requireLinkBreed(context, linkBreed)
     requireAlive(destNode)
-    Metrics.pathTurtles(
+    Metrics.linkPath(
       context.getRNG, context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
       destNode.asInstanceOf[org.nlogo.agent.Turtle],
       linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
   }
 }
 
-object PathLinks extends DefaultReporter with Helpers {
+object LinkPathTurtles extends DefaultReporter with Helpers {
   override def getSyntax =
     Syntax.reporterSyntax(
       Array(Syntax.TurtleType, Syntax.LinksetType),
@@ -168,7 +168,7 @@ object PathLinks extends DefaultReporter with Helpers {
     val linkBreed = args(1).getAgentSet
     requireLinkBreed(context, linkBreed)
     requireAlive(destNode)
-    Metrics.pathLinks(
+    Metrics.linkPathTurtles(
       context.getRNG, context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
       destNode.asInstanceOf[org.nlogo.agent.Turtle],
       linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])

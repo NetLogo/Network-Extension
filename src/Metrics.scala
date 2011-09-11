@@ -60,13 +60,13 @@ object Metrics {
     new ArrayAgentSet(classOf[Turtle], resultArray, start.world)
   }
 
-  def pathTurtles(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList =
+  def linkPathTurtles(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList =
     breadthFirstSearch(start, links)
       .find(_.head eq end)
       .map(path => LogoList.fromIterator(path.reverseIterator))
       .getOrElse(LogoList.Empty)
 
-  def pathLinks(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList = {
+  def linkPath(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList = {
     val linkManager = start.world.linkManager
     def turtlesToLinks(turtles: List[Turtle]): Iterator[Link] =
       for((end1, end2) <- turtles.iterator zip turtles.tail.iterator)
@@ -77,7 +77,7 @@ object Metrics {
       .getOrElse(LogoList.Empty)
   }
 
-  def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Option[Double] = {
+  def meanLinkPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Option[Double] = {
     val count = nodeSet.count
     if(count == 0)
       None

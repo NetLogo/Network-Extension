@@ -4,10 +4,6 @@ It requires NetLogo 5.0beta5, which isn't out yet.
 
 ## TO DO
 
-* "links in the prim names" ought to be replaceable with a breed name.
-  (even if we don't do that now, I guess we ought to give the prim names
-  that all have "link" in them? do we need link-path-links [or just
-  link-path?], link-path-turtles, mean-link-path-length?)
 * have Forrest review the design and the code
 * get README in final shape for release
 
@@ -18,6 +14,12 @@ Anywhere a link breed is required, `links` is also accepted.
 Path lengths are computed based solely on the number of hops.  There
 isn't currently any way to specify a "weight" or "distance" variable
 for links.
+
+Ideally, instead of taking a link breed as input, the breed could take
+the place of `link` in the primitive name.  Currently the extensions
+API doesn't allow primitives that change name like this, but it should
+in some future NetLogo version.  Anyway, this is why all the names
+have `link` in them.
 
 ## Primitives
 
@@ -50,23 +52,23 @@ following links of the given link breed.
 
 Reports false if no path exists.
 
-### network:path-turtles, network:path-links
+### network:link-path, link-path-turtles
 
-![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-turtles TURTLE LINK-BREED`  
-![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:path-links TURTLE LINK-BREED`
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:link-path TURTLE LINK-BREED`
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:link-path-turtles TURTLE LINK-BREED`  
 
-example:`ask banker1 [ show network:path-turtles banker3 friendships ]`
-->   [(banker 1) (banker 2) (banker 3)]
- 
-example: `ask banker1 [ show network:path-links banker3 friendships ]`
+example: `ask banker1 [ show network:link-path banker3 friendships ]`
 ->   [(link 1 2) (link 2 3)]
 
+example:`ask banker1 [ show network:link-path-turtles banker3 friendships ]`
+->   [(banker 1) (banker 2) (banker 3)]
+ 
 Reports a list of turtles or links following the shortest path from the calling
 turtle to the destination turtle.
 
 Reports an empty list if no path exists.
 
-If `network:path-turtles` is used, the calling turtle and the
+If `network:link-path-turtles` is used, the calling turtle and the
 destination are included in the list.
 
 Searches breadth-first from the calling turtle,
@@ -76,9 +78,9 @@ Follows links at the same depth in random order.  If there are
 multiple shortest paths, a different path may be returned on
 subsequent calls, depending on the random choices made during search.
 
-### network:mean-path-length
+### network:mean-link-path-length
 
-`network:mean-path-length TURTLE-SET LINK-BREED`
+`network:mean-link-path-length TURTLE-SET LINK-BREED`
 
 Reports the average shortest-path length between all distinct pairs of
 nodes in the given set of turtles, following links of the given link
@@ -95,9 +97,9 @@ They were renamed as follows:
 
 * `__network-distance` to `network:link-distance`
 * `__in-network-radius` to `network:in-link-radius`
-* `__average-path-length` to `network:mean-path-length`
-* `__network-shortest-path-turtles` to `network:path-turtles`
-* `__network-shortest-path-links` to `network:path-links`
+* `__average-path-length` to `network:mean-link-path-length`
+* `__network-shortest-path-turtles` to `network:link-path-turtles`
+* `__network-shortest-path-links` to `network:link-path`
 
 ### Omitted primitives
 
