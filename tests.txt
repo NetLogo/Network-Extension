@@ -150,3 +150,46 @@ path-links-on-a-circle
   sort [length network:path-links turtle 0 links] of turtles => [0 1 1 2 2 3]
 
 ### mean-path-length
+
+## undirected links
+
+mean-path-length-empty
+  extensions [network]
+  network:mean-path-length turtles links => false
+
+mean-path-length-one-turtle
+  extensions [network]
+  network:mean-path-length turtles links => false
+
+mean-path-length-two-unconnected-turtles
+  extensions [network]
+  O> crt 2
+  network:mean-path-length turtles links => false
+
+mean-path-length-two-connected-turtles
+  extensions [network]
+  O> crt 2 [ create-links-with other turtles ]
+  network:mean-path-length turtles links => 1
+
+mean-path-length-fully-connected
+  extensions [network]
+  O> crt 10 [ create-links-with other turtles ]
+  network:mean-path-length turtles links => 1
+
+mean-path-length-on-a-pentagon
+  extensions [network]
+  O> crt 5 [ create-link-with turtle ((who + 1) mod 5) ]
+  network:mean-path-length turtles links => 1.5
+
+## directed links
+
+mean-path-length-directed-two-half-connected-turtles
+  extensions [network]
+  O> crt 2
+  O> ask turtle 0 [ create-links-to other turtles ]
+  network:mean-path-length turtles links => false
+
+mean-path-length-directed-two-connected-turtles
+  extensions [network]
+  O> crt 2 [ create-links-to other turtles ]
+  network:mean-path-length turtles links => 1

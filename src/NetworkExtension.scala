@@ -68,7 +68,7 @@ object LinkDistance extends DefaultReporter with Helpers {
         context.getAgent.asInstanceOf[org.nlogo.agent.Turtle],
         destNode.asInstanceOf[org.nlogo.agent.Turtle],
         linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
-    result.map(java.lang.Double.valueOf(_))
+    result.map(Double.box(_))
       .getOrElse(java.lang.Boolean.FALSE)
   }
 }
@@ -87,7 +87,7 @@ object MeanPathLength extends DefaultReporter with Helpers {
       Metrics.meanPathLength(
         nodeSet.asInstanceOf[org.nlogo.agent.AgentSet],
         linkBreed.asInstanceOf[org.nlogo.agent.AgentSet])
-    result.map(java.lang.Double.valueOf(_))
+    result.map(Double.box(_))
       .getOrElse(java.lang.Boolean.FALSE)
   }
 }

@@ -2,10 +2,12 @@
 
 It requires NetLogo 5.0beta5, which isn't out yet.
 
-## TODO
+## TO DO
 
 definitely:
 
+* finish `mean-path-length`
+* should `mean-path-length` require undirected links? (ask Forrest?)
 * change `extended-link-neighbors` back to `in-link-radius` and take a sourceSet input
 * split in-link-radius into in-, in-in-, in-out-
 * "links in the prim names" ought to be replaceable with a breed name.

@@ -72,59 +72,23 @@ object Metrics {
       .getOrElse(LogoList.Empty)
   }
 
-  def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Option[Double] =
-    None
-/*
-    var linkManager: LinkManager = null
-    val seen = collection.mutable.HashSet[Turtle]()
-    val queue = collection.mutable.Queue[Option[Turtle]]()
-    var totalSum = 0L
-    val it2 = nodeSet.iterator
-    while(it2.hasNext) {
-      val agt = it2.next().asInstanceOf[Turtle]
-      var nodeSetVisitedCount = 0
-      seen.clear();
-      seen += agt
-      queue += Some(agt)
-      // we use None to mark radius-layer boundaries
-      queue += None
-      var layer = 0
-      var done = false
-      while (true) {
-        val curNode = queue.dequeue()
-        if (curNode == None && queue.isEmpty)
-          done = true
-        else if (curNode == None) {
-          layer += 1
-          queue += None
-        }
-        else {
-          if (nodeSet.contains(curNode.get)) {
-            totalSum += layer
-            nodeSetVisitedCount += 1
-          }
-          if(linkManager == null)
-            linkManager = curNode.get.world.linkManager
-          val neighborSet = linkManager.findLinkedWith(curNode.get, linkBreed)
-          val it = neighborSet.iterator
-          while(it.hasNext) {
-            val toAdd = it.next().asInstanceOf[Turtle]
-            if (!seen(toAdd)) {
-              seen += toAdd
-              queue += Some(toAdd)
-            }
-          }
-        }
-        if (nodeSetVisitedCount != nodeSet.count)
-          return -1.0
-      }
+  def meanPathLength(nodeSet: AgentSet, linkBreed: AgentSet): Option[Double] = {
+    val count = nodeSet.count
+    if(count == 0)
+      None
+    else {
+      val paths =
+        for {
+          start <- asScala(nodeSet.iterator).toIndexedSeq[Turtle]
+          path <- breadthFirstSearch(start, linkBreed)
+          if path.tail.nonEmpty && nodeSet.contains(path.head)
+        } yield path
+      val size = paths.size
+      if(size != count * (count - 1))
+        None
+      else
+        Some(paths.map(_.length - 1).sum.toDouble / size)
     }
-    val nodeCount = nodeSet.count
-    if (nodeCount == 1)
-      0
-    else
-      totalSum.toDouble / (nodeCount * (nodeCount - 1))
   }
-*/
 
 }
