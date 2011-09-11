@@ -60,8 +60,8 @@ Reports false if no path exists.
 
 ### network:link-path, link-path-turtles
 
-![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:link-path TURTLE LINK-BREED`
-![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:link-path-turtles TURTLE LINK-BREED`  
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:link-path TURTLE LINK-BREED`  
+![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `network:link-path-turtles TURTLE LINK-BREED`
 
 example: `ask banker1 [ show network:link-path banker3 friendships ]`
 ->   [(link 1 2) (link 2 3)]
