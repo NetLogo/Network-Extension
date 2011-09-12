@@ -102,10 +102,10 @@ The primitives in this extension were present in NetLogo 4.1, but with different
 They were renamed as follows:
 
 * `__network-distance` to `network:link-distance`
-* `__in-network-radius` to `network:in-link-radius`
+* `__in-network-radius` to `network:in-link-radius`, `network:in-out-link-radius`, `network:in-in-link-radius`
 * `__average-path-length` to `network:mean-link-path-length`
-* `__network-shortest-path-turtles` to `network:link-path-turtles`
 * `__network-shortest-path-links` to `network:link-path`
+* `__network-shortest-path-turtles` to `network:link-path-turtles`
 
 ### Omitted primitives
 
