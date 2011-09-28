@@ -35,7 +35,7 @@ have `link` in them.
 ![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `TURTLESET network:in-out-link-radius RADIUS LINK-BREED`  
 ![turtle](https://github.com/NetLogo/Network-Extension/raw/master/turtle.gif) `TURTLESET network:in-in-link-radius RADIUS LINK-BREED`
 
-example: `ask one-of bankers [ show other bankers in-network-radius 5 friendships ]`
+example: `ask one-of bankers [ show other bankers network:in-link-radius 5 friendships ]`
 
 Returns the set of turtles within the given distance (number of links followed)
 of the calling turtle.
