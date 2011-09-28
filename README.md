@@ -1,19 +1,13 @@
-# THIS CODE CAN'T CURRENTLY BE BUILT OR RUN (EXCEPT AT NORTHWESTERN)
-
-It requires NetLogo 5.0beta5, which isn't out yet.
-
 # NetLogo network extension
 
-This package contains the NetLogo network extension.
+This extension is (since 5.0RC1) pre-installed in NetLogo. (For help with extensions in general, see the NetLogo User Manual.)
 
-This extension is experimental.  Although it is presently bundled with NetLogo, it should not be considered a standard part of the application.
+This extension is experimental.  Although it is presently bundled with NetLogo, it should not be considered a standard, fully-supported part of the application.
 
 The source code for the extension is hosted online at
 https://github.com/NetLogo/Network-Extension
 
-## Using
-
-This extension is pre-installed in NetLogo. (For help with extensions in general, see the NetLogo User Manual.)
+## Usage
 
 Anywhere a link breed is required, `links` is also accepted.
 
