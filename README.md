@@ -1,6 +1,6 @@
 # NetLogo network extension
 
-This extension is (since 5.0RC1) pre-installed in NetLogo. (For help with extensions in general, see the NetLogo User Manual.)
+This extension is pre-installed in NetLogo 5.0. (For help with extensions in general, see the NetLogo User Manual.)
 
 This extension is experimental.  Although it is presently bundled with NetLogo, it should not be considered a standard, fully-supported part of the application.
 
