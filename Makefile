@@ -6,6 +6,13 @@ ifeq ($(origin SCALA_HOME), undefined)
   SCALA_HOME=../..
 endif
 
+ifneq (,$(findstring CYGWIN,$(shell uname -s)))
+  COLON=\;
+  SCALA_HOME := `cygpath -up "$(SCALA_HOME)"`
+else
+  COLON=:
+endif
+
 SRCS=$(wildcard src/*.scala)
 
 network.jar: $(SRCS) manifest.txt Makefile
