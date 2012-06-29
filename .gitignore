@@ -1,5 +1,7 @@
 *~
-/classes
+/bin/sbt-launch-*.jar
+/project
+/target
 /network.jar
 /network.jar.pack.gz
 /network.zip

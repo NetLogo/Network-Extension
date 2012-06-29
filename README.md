@@ -114,11 +114,9 @@ For the source code for these primitives, see [this commit](https://github.com/N
 
 ## Building
 
-Use the NETLOGO environment variable to tell the Makefile which NetLogo.jar to compile against.  For example:
+Run the `bin/sbt` script to build the extension.
 
-    NETLOGO=/Applications/NetLogo\\\ 5.0 make
-
-If compilation succeeds, `network.jar` will be created.
+If the build succeeds, `network.jar` is created.
 
 ## Credits
 

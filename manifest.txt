@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Extension-Name: network
-Class-Manager: org.nlogo.extensions.network.NetworkExtension
-NetLogo-Extension-API-Version: 5.0
