@@ -84,7 +84,7 @@ object Metrics {
     else {
       val paths =
         for {
-          start <- asScala(nodeSet.iterator).toIndexedSeq[Turtle]
+          start <- asScala[Turtle](nodeSet.iterator).toIndexedSeq
           path <- breadthFirstSearch(start, linkBreed)
           if path.tail.nonEmpty && nodeSet.contains(path.head)
         } yield path
