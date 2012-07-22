@@ -1,8 +1,8 @@
 package org.nlogo.extensions.network
 
 import org.nlogo.api.{
-  DefaultClassManager, PrimitiveManager, Agent, AgentSet, Argument, Context, DefaultReporter,
-  ExtensionException, I18N, Primitive, Syntax, Turtle }
+  DefaultClassManager, PrimitiveManager, Agent, AgentKind, AgentSet, Argument, Context,
+  DefaultReporter, ExtensionException, I18N, Primitive, Syntax, Turtle }
 
 class NetworkExtension extends DefaultClassManager {
   override def load(primManager: PrimitiveManager) {
@@ -27,7 +27,7 @@ trait Helpers {
       agentClassString = "-T--",
       blockAgentClassString = null)
   def requireTurtleset(agents: AgentSet) {
-    if(!classOf[Turtle].isAssignableFrom(agents.kind))
+    if(agents.kind != AgentKind.Turtle)
       throw new ExtensionException(
         "Expected input to be a turtleset")
   }
