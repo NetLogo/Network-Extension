@@ -27,7 +27,7 @@ trait Helpers {
       agentClassString = "-T--",
       blockAgentClassString = null)
   def requireTurtleset(agents: AgentSet) {
-    if(!classOf[Turtle].isAssignableFrom(agents.`type`))
+    if(!classOf[Turtle].isAssignableFrom(agents.kind))
       throw new ExtensionException(
         "Expected input to be a turtleset")
   }
