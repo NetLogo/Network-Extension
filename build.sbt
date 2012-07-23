@@ -6,8 +6,8 @@ scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xfatal-warning
                       "-encoding", "us-ascii")
 
 libraryDependencies +=
-  "org.nlogo" % "NetLogo" % "5.x-SNAPSHOT" changing() from
-    (file(".") / ".." / ".." / "NetLogo.jar").toURI.toURL.toString
+  "org.nlogo" % "NetLogo" % "5.x-e82ee0d7" from
+    "http://ccl.northwestern.edu/devel/NetLogo-e82ee0d7.jar"
 
 artifactName := { (_, _, _) => "network.jar" }
 
