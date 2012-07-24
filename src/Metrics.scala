@@ -1,13 +1,13 @@
 package org.nlogo.extensions.network
 
 import org.nlogo.api.{ AgentKind, LogoList, LogoListBuilder }
-import org.nlogo.agent.{ LinkManager, Agent, Turtle, Link, AgentSet, ArrayAgentSet }
+import org.nlogo.agent.{ LinkManager, Agent, AgentIterator, Turtle, Link, AgentSet, ArrayAgentSet }
 import org.nlogo.util.{ MersenneTwisterFast => Random }
 
 object Metrics {
 
   // make agentset iterators easier to use in Scala
-  private def asScala[T <: Agent](it: AgentSet.Iterator): Iterator[T] =
+  private def asScala[T <: Agent](it: AgentIterator): Iterator[T] =
     new Iterator[T] {
       def hasNext = it.hasNext
       def next() = it.next().asInstanceOf[T]
