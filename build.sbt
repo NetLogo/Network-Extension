@@ -6,8 +6,8 @@ scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xfatal-warning
                       "-encoding", "us-ascii")
 
 libraryDependencies +=
-  "org.nlogo" % "NetLogo" % "5.x-4a1059ab" from
-    "http://ccl.northwestern.edu/devel/NetLogo-4a1059ab.jar"
+  "org.nlogo" % "NetLogoHeadless" % "5.x-8568f6f4" from
+    "http://ccl.northwestern.edu/devel/NetLogoHeadless-8568f6f4.jar"
 
 artifactName := { (_, _, _) => "network.jar" }
 
