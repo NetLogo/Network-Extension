@@ -2,7 +2,7 @@ scalaVersion := "2.10.0"
 
 scalaSource in Compile <<= baseDirectory(_ / "src")
 
-scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xfatal-warnings",
+scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint", "-Xfatal-warnings",
                       "-encoding", "us-ascii")
 
 libraryDependencies +=
