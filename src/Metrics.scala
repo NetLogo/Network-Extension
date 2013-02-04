@@ -1,7 +1,7 @@
 package org.nlogo.extensions.network
 
 import org.nlogo.api.{ AgentKind, LogoList, LogoListBuilder }
-import org.nlogo.agent.{ LinkManager, Agent, AgentIterator, Turtle, Link, AgentSet, ArrayAgentSet }
+import org.nlogo.agent.{ LinkManager, Agent, AgentIterator, Turtle, Link, AgentSet }
 import org.nlogo.util.{ MersenneTwisterFast => Random }
 
 object Metrics {
@@ -57,7 +57,7 @@ object Metrics {
         .map(_.head)
         .filter(sourceSet.contains)
         .toArray[Agent]
-    ArrayAgentSet.fromArray(AgentKind.Turtle, resultArray)
+    AgentSet.fromArray(AgentKind.Turtle, resultArray)
   }
 
   def linkPathTurtles(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList =
