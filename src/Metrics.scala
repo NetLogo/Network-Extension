@@ -57,7 +57,7 @@ object Metrics {
         .map(_.head)
         .filter(sourceSet.contains)
         .toArray[Agent]
-    ArrayAgentSet.fromArray(AgentKind.Turtle, start.world, resultArray)
+    ArrayAgentSet.fromArray(AgentKind.Turtle, resultArray)
   }
 
   def linkPathTurtles(random: Random, start: Turtle, end: Turtle, links: AgentSet): LogoList =
