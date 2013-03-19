@@ -7,6 +7,11 @@ This extension is experimental.  Although it is presently bundled with NetLogo, 
 The source code for the extension is hosted online at
 https://github.com/NetLogo/Network-Extension
 
+### New network extension
+
+We are currently developing a much more powerful, next-generation network extension to be bundled with a future version of NetLogo.
+See https://github.com/NetLogo/NW-Extension
+
 ## Usage
 
 Anywhere a link breed is required, `links` is also accepted.
