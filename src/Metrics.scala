@@ -21,7 +21,7 @@ object Metrics {
       val memory = collection.mutable.HashSet[Turtle](start)
       t => memory(t) || { memory += t; false }
     }
-    val neighborFinder: Turtle => AgentSet = {
+    val neighborFinder: Turtle => Iterator[Turtle] = {
       val linkManager = start.world.linkManager
       (links.isDirected, reverse) match {
         case (false, _) =>
@@ -33,8 +33,7 @@ object Metrics {
       }
     }
     def neighbors(node: Turtle): Iterator[Turtle] =
-      asScala(neighborFinder(node).iterator)
-        .filterNot(seen)
+      neighborFinder(node).filterNot(seen)
     def nextLayer(layer: Stream[List[Turtle]]) =
       for {
         path <- layer
