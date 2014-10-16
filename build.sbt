@@ -1,4 +1,4 @@
-scalaVersion := "2.10.0"
+scalaVersion := "2.10.4"
 
 scalaSource in Compile <<= baseDirectory(_ / "src")
 
@@ -6,8 +6,8 @@ scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint", "-Xfat
                       "-encoding", "us-ascii")
 
 libraryDependencies +=
-  "org.nlogo" % "NetLogoHeadless" % "5.x-e4dbb79c" from
-    "http://ccl.northwestern.edu/devel/NetLogoHeadless-e4dbb79c.jar"
+  "org.nlogo" % "NetLogoHeadless" % "6.0-M1" from
+    "http://ccl.northwestern.edu/devel/6.0-M1/NetLogoHeadless.jar"
 
 artifactName := { (_, _, _) => "network.jar" }
 
