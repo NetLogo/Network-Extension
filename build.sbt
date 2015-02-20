@@ -20,15 +20,11 @@ packageOptions := Seq(
 packageBin in Compile <<= (packageBin in Compile, baseDirectory, streams) map {
   (jar, base, s) =>
     IO.copyFile(jar, base / "network.jar")
-    Process("pack200 --modification-time=latest --effort=9 --strip-debug " +
-            "--no-keep-file-order --unknown-attribute=strip " +
-            "network.jar.pack.gz network.jar").!!
     if(Process("git diff --quiet --exit-code HEAD").! == 0) {
       Process("git archive -o network.zip --prefix=network/ HEAD").!!
       IO.createDirectory(base / "network")
       IO.copyFile(base / "network.jar", base / "network" / "network.jar")
-      IO.copyFile(base / "network.jar.pack.gz", base / "network" / "network.jar.pack.gz")
-      Process("zip network.zip network/network.jar network/network.jar.pack.gz").!!
+      Process("zip network.zip network/network.jar").!!
       IO.delete(base / "network")
     }
     else {
@@ -40,5 +36,4 @@ packageBin in Compile <<= (packageBin in Compile, baseDirectory, streams) map {
 
 cleanFiles <++= baseDirectory { base =>
   Seq(base / "network.jar",
-      base / "network.jar.pack.gz",
       base / "network.zip") }
