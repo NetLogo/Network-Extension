@@ -1,6 +1,7 @@
 *~
 /bin/sbt-launch-*.jar
-/project
+/project/project
+/project/target
 /target
 /network.jar
 /network.jar.pack.gz
